@@ -1,0 +1,22 @@
+.container {
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  background-color: aquamarine;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
+.iconContainer {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: rgb(184, 183, 183);
+  padding: 8px;
+}
+
+.deleteIcon {
+  width: 20px;
+}
