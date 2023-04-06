@@ -8,7 +8,9 @@ function SimpleButton(props) {
 
   return (
     <>
-      <button style={buttonStyle}>{props.text}</button>
+      <button style={buttonStyle} onClick={props.handleClick}>
+        {props.text}
+      </button>
     </>
   );
 }
