@@ -14,7 +14,6 @@ function Home() {
             </div>
             <div className="flex">
                 <Link to="/create-client"><MenuItemCard title='Add Client'></MenuItemCard></Link>
-                <Link to="/create-client"><MenuItemCard title='Add Client'></MenuItemCard></Link>
                 <Link to="/list-clients"><MenuItemCard title='Clients'></MenuItemCard></Link>
             </div>
             <div className="flex">
