@@ -12,6 +12,7 @@ import CreateProduct from './pages/Products/create-product';
 import ListProducts from './pages/Products/list-products';
 import CreateClient from './pages/Clients/create-client';
 import ListClients from './pages/Clients/list-clients';
+import CreateCategory from './pages/Categories/create-category';
 import ListCategories from './pages/Categories/list-categories';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

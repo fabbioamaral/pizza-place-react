@@ -9,7 +9,7 @@ function Home() {
                 <Link to="list-orders"><MenuItemCard title='Orders History'></MenuItemCard></Link>
             </div>
             <div className="flex">
-            <Link to="/create-product"><MenuItemCard title='Products'></MenuItemCard></Link>
+            <Link to="/create-product"><MenuItemCard title='Create Product'></MenuItemCard></Link>
                 <Link to="/list-products"><MenuItemCard title='Products'></MenuItemCard></Link> 
             </div>
             <div className="flex">
