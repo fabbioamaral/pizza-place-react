@@ -2,13 +2,22 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl, FormLabel } from '@mui/material';
 import { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import { CREATE_CATEGORY } from './graphql/category-graphql';
 
 function CreateCategory() {
     const [categoryName, setCategoryName] = useState('');
+    const [createCategory] = useMutation(CREATE_CATEGORY);
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = async (event: any) => {
         event.preventDefault();
-        console.log(categoryName);
+        try {
+            const res = await createCategory({variables: {name: categoryName}});
+            // TODO: display success toast message
+            // TODO: redirect user to list-category page
+        } catch (error) {
+            // TODO: display fail toast message
+        }
     }
 
     return (
