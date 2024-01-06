@@ -5,8 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import CreateOrder from './pages/Orders/create-order';
 import ListOrders from './pages/Orders/list-orders';
@@ -18,29 +17,31 @@ import CreateCategory from './pages/Categories/create-category';
 import ListCategories from './pages/Categories/list-categories';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const client = new ApolloClient({
-  uri: 'http://localhost:3000/graphql'
+export const cache = new InMemoryCache();
+export const client = new ApolloClient({
+  uri: 'http://localhost:3000/graphql',
+  cache,
 });
 
 root.render(
-    <ApolloProvider client={client}>
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={< Home />} />
-      <Route path="/create-order" element={< CreateOrder />} />
-      <Route path="/list-orders" element={< ListOrders />} />
-      <Route path="/create-product" element={< CreateProduct />} />
-      <Route path="/list-products" element={< ListProducts />} />
-      <Route path="/create-client" element={< CreateClient />} />
-      <Route path="/list-clients" element={< ListClients />} />
-      <Route path="/create-category" element={< CreateCategory />} />
-      <Route path="/list-category" element={< ListCategories />} />
-    </Routes>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
-  </BrowserRouter>
-      </ApolloProvider>
+  <ApolloProvider client={client}>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/create-order" element={<CreateOrder />} />
+        <Route path="/list-orders" element={<ListOrders />} />
+        <Route path="/create-product" element={<CreateProduct />} />
+        <Route path="/list-products" element={<ListProducts />} />
+        <Route path="/create-client" element={<CreateClient />} />
+        <Route path="/list-clients" element={<ListClients />} />
+        <Route path="/create-category" element={<CreateCategory />} />
+        <Route path="/list-categories" element={<ListCategories />} />
+      </Routes>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </BrowserRouter>
+  </ApolloProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
