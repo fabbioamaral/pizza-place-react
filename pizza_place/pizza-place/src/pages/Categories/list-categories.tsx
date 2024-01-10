@@ -12,15 +12,12 @@ import { useQuery } from '@apollo/client';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { useMutation } from '@apollo/react-hooks';
 import { DELETE_CATEGORY } from './graphql/delete-category';
 import { CategoryModalState } from './types/category-modal-state';
 import { Category } from './types/category';
 import { cache, client } from '../..';
+import ModalDeleteCategory from './components/ModalDeleteCategory';
 
 function ListCategories() {
   const { data, loading, error } = useQuery(GET_CATEGORIES);
@@ -67,18 +64,6 @@ function ListCategories() {
     }));
   };
 
-  const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
-
   // if (loading) return 'Loading...';
   // if (error) return <pre>{error.message}</pre>;
 
@@ -113,35 +98,12 @@ function ListCategories() {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <Modal
-        open={deleteModalData.isOpen}
+      <ModalDeleteCategory
+        isOpen={deleteModalData.isOpen}
         onClose={handleCloseDeleteModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Delete Category
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete this category?
-          </Typography>
-          <div className="mt-4">
-            <Button
-              sx={{ mr: 2 }}
-              color="error"
-              variant="outlined"
-              onClick={onDeleteCategory}
-            >
-              Delete
-            </Button>
-            <Button variant="outlined" onClick={handleCloseDeleteModal}>
-              Dismiss
-            </Button>
-          </div>
-        </Box>
-      </Modal>
+        onDeleteClick={onDeleteCategory}
+        onDismissClick={handleCloseDeleteModal}
+      ></ModalDeleteCategory>
     </div>
   );
 }
