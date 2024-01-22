@@ -20,6 +20,7 @@ import { cache, client } from '../..';
 import ModalDeleteCategory from './components/ModalDeleteCategory';
 import ModalUpdateCategory from './components/ModalUpdateCategory';
 import { UPDATE_CATEGORY } from './graphql/update-category';
+import Header from '../../shared/components/header';
 
 function ListCategories() {
   const { data, loading, error } = useQuery(GET_CATEGORIES);
@@ -118,55 +119,58 @@ function ListCategories() {
   // if (error) return <pre>{error.message}</pre>;
 
   return (
-    <div className="p-8">
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="category table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Category Name</TableCell>
-              <TableCell align="left">Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {categories?.map((category: Category) => (
-              <TableRow
-                key={category.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {category.name}
-                </TableCell>
-                <TableCell align="left">
-                  <DeleteIcon
-                    className="mr-4 cursor-pointer"
-                    onClick={() => handleOpenModal(category.id, true)}
-                  ></DeleteIcon>
-                  <EditIcon
-                    className="cursor-pointer"
-                    onClick={() =>
-                      handleOpenModal(category.id, false, category.name)
-                    }
-                  ></EditIcon>
-                </TableCell>
+    <>
+      <Header></Header>
+      <div className="p-8">
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="category table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Category Name</TableCell>
+                <TableCell align="left">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <ModalDeleteCategory
-        isOpen={deleteModalData.isOpen}
-        onClose={() => handleCloseModal(true)}
-        onAction={onDeleteCategory}
-        onDismiss={() => handleCloseModal(true)}
-      ></ModalDeleteCategory>
-      <ModalUpdateCategory
-        isOpen={updateModalData.isOpen}
-        onClose={() => handleCloseModal(false)}
-        onAction={onUpdateCategory}
-        onDismiss={() => handleCloseModal(false)}
-        data={updateModalData.name}
-      ></ModalUpdateCategory>
-    </div>
+            </TableHead>
+            <TableBody>
+              {categories?.map((category: Category) => (
+                <TableRow
+                  key={category.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {category.name}
+                  </TableCell>
+                  <TableCell align="left">
+                    <DeleteIcon
+                      className="mr-4 cursor-pointer"
+                      onClick={() => handleOpenModal(category.id, true)}
+                    ></DeleteIcon>
+                    <EditIcon
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleOpenModal(category.id, false, category.name)
+                      }
+                    ></EditIcon>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <ModalDeleteCategory
+          isOpen={deleteModalData.isOpen}
+          onClose={() => handleCloseModal(true)}
+          onAction={onDeleteCategory}
+          onDismiss={() => handleCloseModal(true)}
+        ></ModalDeleteCategory>
+        <ModalUpdateCategory
+          isOpen={updateModalData.isOpen}
+          onClose={() => handleCloseModal(false)}
+          onAction={onUpdateCategory}
+          onDismiss={() => handleCloseModal(false)}
+          data={updateModalData.name}
+        ></ModalUpdateCategory>
+      </div>
+    </>
   );
 }
 

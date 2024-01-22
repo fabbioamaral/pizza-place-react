@@ -11,6 +11,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { SnackContent } from '../../shared/types/snack';
 import { cache } from '../..';
 import { GET_CATEGORIES } from './graphql/get-categories';
+import Header from '../../shared/components/header';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -82,36 +83,39 @@ function CreateCategory() {
   };
 
   return (
-    <div className="p-10">
-      <h1 className="font-bold mb-10">Create a new product category</h1>
-      <form onSubmit={handleSubmit}>
-        <FormControl className="w-80">
-          <FormLabel sx={{ mb: 1 }}>Enter new category name</FormLabel>
-          <TextField
-            variant="outlined"
-            required
-            sx={{ mb: 2 }}
-            onChange={(e) => setCategoryName(e.target.value)}
-          ></TextField>
-          <Button variant="contained" type="submit">
-            Submit
-          </Button>
-        </FormControl>
-      </form>
-      <Snackbar
-        open={snackContent.shouldDisplay}
-        autoHideDuration={3000}
-        onClose={handleCloseSnack}
-      >
-        <Alert
+    <>
+      <Header></Header>
+      <div className="p-10">
+        <h1 className="font-bold mb-10">Create a new product category</h1>
+        <form onSubmit={handleSubmit}>
+          <FormControl className="w-80">
+            <FormLabel sx={{ mb: 1 }}>Enter new category name</FormLabel>
+            <TextField
+              variant="outlined"
+              required
+              sx={{ mb: 2 }}
+              onChange={(e) => setCategoryName(e.target.value)}
+            ></TextField>
+            <Button variant="contained" type="submit">
+              Submit
+            </Button>
+          </FormControl>
+        </form>
+        <Snackbar
+          open={snackContent.shouldDisplay}
+          autoHideDuration={3000}
           onClose={handleCloseSnack}
-          severity={snackContent.typeOfSnack}
-          sx={{ width: '100%' }}
         >
-          {snackContent.message}
-        </Alert>
-      </Snackbar>
-    </div>
+          <Alert
+            onClose={handleCloseSnack}
+            severity={snackContent.typeOfSnack}
+            sx={{ width: '100%' }}
+          >
+            {snackContent.message}
+          </Alert>
+        </Snackbar>
+      </div>
+    </>
   );
 }
 
