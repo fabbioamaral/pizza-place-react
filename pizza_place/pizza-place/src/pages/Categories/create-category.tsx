@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { CREATE_CATEGORY } from './graphql/create-category';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { SnackContent } from '../../shared/types/snack';
+import { cache } from '../..';
+import { GET_CATEGORIES } from './graphql/get-categories';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -31,7 +33,11 @@ function CreateCategory() {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
-      await createCategory({ variables: { name: categoryName } });
+      const result = await createCategory({
+        variables: { name: categoryName },
+      });
+      handleAddItem(result.data.id);
+
       setSnackContent({
         shouldDisplay: true,
         message: 'Product Category has been added successfully!',
@@ -44,7 +50,27 @@ function CreateCategory() {
         message: 'Error trying to add Product Category',
         typeOfSnack: 'error',
       });
+      console.error(error);
     }
+  };
+
+  const handleAddItem = (categoryId: number) => {
+    cache.updateQuery({ query: GET_CATEGORIES }, (data) => {
+      console.log(data);
+      if (!data) {
+        return {
+          categories: [{ id: categoryId, name: categoryName }],
+        };
+      } else {
+        const categoriesCopy = JSON.parse(JSON.stringify(data.categories));
+        return {
+          categories: categoriesCopy.push({
+            id: categoryId,
+            name: categoryName,
+          }),
+        };
+      }
+    });
   };
 
   const handleCloseSnack = () => {
