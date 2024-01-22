@@ -18,42 +18,48 @@ import { CategoryModalState } from './types/category-modal-state';
 import { Category } from './types/category';
 import { cache, client } from '../..';
 import ModalDeleteCategory from './components/ModalDeleteCategory';
+import ModalUpdateCategory from './components/ModalUpdateCategory';
+import { UPDATE_CATEGORY } from './graphql/update-category';
 
 function ListCategories() {
   const { data, loading, error } = useQuery(GET_CATEGORIES);
-  console.log('data');
-  console.log(data);
 
   // reading cache
   const categories: Category[] = client.readQuery({
     query: GET_CATEGORIES,
   })?.categories;
-  console.log('categories cache');
-  console.log(categories);
 
+  const handleOpenModal = (
+    categoryId: number,
+    isDeleteModal: boolean,
+    categoryName?: string
+  ) => {
+    if (isDeleteModal) setDeleteModalData({ isOpen: true, categoryId });
+    else setUpdateModalData({ isOpen: true, categoryId, name: categoryName });
+  };
+  const handleCloseModal = (isDeleteModal: boolean) => {
+    if (isDeleteModal)
+      setDeleteModalData({ isOpen: false, categoryId: undefined });
+    else setUpdateModalData({ isOpen: false, categoryId: undefined, name: '' });
+  };
+
+  // delete modal logic
   const [deleteCategory] = useMutation(DELETE_CATEGORY);
-
-  // modal logic
   const [deleteModalData, setDeleteModalData] =
     React.useState<CategoryModalState>({
       isOpen: false,
       categoryId: undefined,
     });
-  const handleOpenDeleteModal = (categoryId: number) =>
-    setDeleteModalData({ isOpen: true, categoryId });
-  const handleCloseDeleteModal = () =>
-    setDeleteModalData({ isOpen: false, categoryId: undefined });
 
   const onDeleteCategory = async () => {
     try {
-      console.log('deleteModalData.categoryId');
-      console.log(deleteModalData.categoryId);
       if (!deleteModalData.categoryId) return;
       await deleteCategory({ variables: { id: deleteModalData.categoryId } });
       handleRemoveItem(deleteModalData.categoryId as number);
-      console.log('category deleted!');
-      handleCloseDeleteModal();
-    } catch (error) {}
+      handleCloseModal(true);
+    } catch (error) {
+      console.error('Deleting category failed' + error);
+    }
   };
 
   const handleRemoveItem = (categoryId: number) => {
@@ -61,6 +67,50 @@ function ListCategories() {
       categories: data.categories.filter(
         (category: Category) => category.id !== categoryId
       ),
+    }));
+  };
+
+  // update modal logic
+  const [updateCategory] = useMutation(UPDATE_CATEGORY);
+  const [updateModalData, setUpdateModalData] =
+    React.useState<CategoryModalState>({
+      isOpen: false,
+      categoryId: undefined,
+      name: '',
+    });
+
+  const onUpdateCategory = async (categoryName: string) => {
+    try {
+      setUpdateModalData({
+        isOpen: updateModalData.isOpen,
+        categoryId: updateModalData.categoryId,
+        name: categoryName,
+      });
+
+      if (!updateModalData.categoryId || !categoryName?.length) return;
+      await updateCategory({
+        variables: {
+          id: updateModalData.categoryId,
+          name: categoryName,
+        },
+      });
+      handleUpdateItem(categoryName);
+      handleCloseModal(false);
+    } catch (error) {
+      console.error('Updating category failed' + error);
+    }
+  };
+
+  const handleUpdateItem = (categoryName: string) => {
+    const categoryIndex = categories.findIndex(
+      (category) => category.id === updateModalData.categoryId
+    );
+
+    // deep copy
+    const categoriesCopy = JSON.parse(JSON.stringify(categories));
+    categoriesCopy[categoryIndex].name = categoryName;
+    cache.updateQuery({ query: GET_CATEGORIES }, () => ({
+      categories: categoriesCopy,
     }));
   };
 
@@ -78,9 +128,9 @@ function ListCategories() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categories?.map((category: any) => (
+            {categories?.map((category: Category) => (
               <TableRow
-                key={category.name}
+                key={category.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
@@ -89,9 +139,14 @@ function ListCategories() {
                 <TableCell align="left">
                   <DeleteIcon
                     className="mr-4 cursor-pointer"
-                    onClick={() => handleOpenDeleteModal(category.id)}
+                    onClick={() => handleOpenModal(category.id, true)}
                   ></DeleteIcon>
-                  <EditIcon className="cursor-pointer"></EditIcon>
+                  <EditIcon
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleOpenModal(category.id, false, category.name)
+                    }
+                  ></EditIcon>
                 </TableCell>
               </TableRow>
             ))}
@@ -100,10 +155,17 @@ function ListCategories() {
       </TableContainer>
       <ModalDeleteCategory
         isOpen={deleteModalData.isOpen}
-        onClose={handleCloseDeleteModal}
-        onDeleteClick={onDeleteCategory}
-        onDismissClick={handleCloseDeleteModal}
+        onClose={() => handleCloseModal(true)}
+        onAction={onDeleteCategory}
+        onDismiss={() => handleCloseModal(true)}
       ></ModalDeleteCategory>
+      <ModalUpdateCategory
+        isOpen={updateModalData.isOpen}
+        onClose={() => handleCloseModal(false)}
+        onAction={onUpdateCategory}
+        onDismiss={() => handleCloseModal(false)}
+        data={updateModalData.name}
+      ></ModalUpdateCategory>
     </div>
   );
 }
