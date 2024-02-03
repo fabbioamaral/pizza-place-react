@@ -8,10 +8,10 @@ import { useMutation } from '@apollo/react-hooks';
 import { useNavigate } from 'react-router-dom';
 import { CREATE_CATEGORY } from './graphql/create-category';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { SnackContent } from '../../shared/types/snack';
 import { cache } from '../..';
 import { GET_CATEGORIES } from './graphql/get-categories';
 import Header from '../../shared/components/header';
+import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -24,12 +24,7 @@ function CreateCategory() {
   const [categoryName, setCategoryName] = useState('');
   const navigate = useNavigate();
   const [createCategory] = useMutation(CREATE_CATEGORY);
-  const snackInitialContent: SnackContent = {
-    shouldDisplay: false,
-    message: '',
-    typeOfSnack: undefined,
-  };
-  const [snackContent, setSnackContent] = useState(snackInitialContent);
+  const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
