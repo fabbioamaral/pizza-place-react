@@ -6,7 +6,8 @@ export const GET_PRODUCTS = gql`
       id
       name
       price
-      category
+      size
+      categoryId
     }
   }
 `;
