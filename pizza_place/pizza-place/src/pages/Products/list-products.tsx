@@ -20,9 +20,9 @@ import { DELETE_PRODUCT } from './graphql/delete-product';
 import { DeleteModalState } from '../../shared/types/delete-modal-state';
 import React from 'react';
 import { UPDATE_PRODUCT } from './graphql/update-product';
-import { Size } from '../../shared/types/size';
 import { GET_CATEGORIES } from '../Categories/graphql/get-categories';
 import { Category } from '../Categories/types/category';
+import ModalUpdateProduct from './components/ModalUpdateProduct';
 
 function ListProducts() {
   useQuery(GET_PRODUCTS);
@@ -92,20 +92,18 @@ function ListProducts() {
         isOpen: updateModalData.isOpen,
         product: productUpdated,
       });
-
       const productBeforeUpdate: Product | undefined = products.find(
         (product) => product.id === productUpdated.id
       );
 
       const productAfterUpdate = {
-        id: productUpdated.id,
+        id: productUpdated?.id,
         name: productUpdated.name || productBeforeUpdate?.name,
         price: productUpdated.price || productBeforeUpdate?.price,
         categoryId:
           productUpdated.categoryId || productBeforeUpdate?.categoryId,
         size: productUpdated.size || productBeforeUpdate?.size,
       };
-
       await updateProduct({
         variables: productAfterUpdate,
       });
@@ -158,7 +156,7 @@ function ListProducts() {
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {
-                      categories.find(
+                      categories?.find(
                         (category) => category.id === product.categoryId
                       )?.name
                     }
@@ -183,21 +181,25 @@ function ListProducts() {
             </TableBody>
           </Table>
         </TableContainer>
-        <ModalDelete
-          title="Delete Product"
-          description="Are you sure you want to delete this prodct?"
-          isOpen={deleteModalData.isOpen}
-          onClose={() => handleCloseModal(true)}
-          onAction={onDeleteCategory}
-          onDismiss={() => handleCloseModal(true)}
-        ></ModalDelete>
-        {/* <ModalUpdateCategory
-          isOpen={updateModalData.isOpen}
-          onClose={() => handleCloseModal(false)}
-          onAction={onUpdateCategory}
-          onDismiss={() => handleCloseModal(false)}
-          data={updateModalData.name}
-        ></ModalUpdateCategory> */}
+        {deleteModalData.isOpen && (
+          <ModalDelete
+            title="Delete Product"
+            description="Are you sure you want to delete this prodct?"
+            isOpen={deleteModalData.isOpen}
+            onClose={() => handleCloseModal(true)}
+            onAction={onDeleteCategory}
+            onDismiss={() => handleCloseModal(true)}
+          ></ModalDelete>
+        )}
+        {updateModalData.isOpen && (
+          <ModalUpdateProduct
+            isOpen={updateModalData.isOpen}
+            onClose={() => handleCloseModal(false)}
+            onAction={onUpdateProduct}
+            onDismiss={() => handleCloseModal(false)}
+            data={{ product: updateModalData.product, categories }}
+          ></ModalUpdateProduct>
+        )}
       </div>
     </>
   );
