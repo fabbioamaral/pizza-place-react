@@ -1,9 +1,20 @@
+import { useQuery } from '@apollo/client';
 import Header from '../../shared/components/header';
 import SearchBar from '../../shared/components/search-bar';
+import Slider from '../../shared/components/slider/slider';
+import { GET_CATEGORIES } from '../Categories/graphql/get-categories';
 import ClientDetails from './components/client-details';
 import SelectedProducts from './components/selected-products';
+import { client } from '../..';
+import { Category } from '../Categories/types/category';
 
 function CreateOrder() {
+  const categoriesData = useQuery(GET_CATEGORIES);
+  // reading cache
+  const categories: Category[] = client.readQuery({
+    query: GET_CATEGORIES,
+  })?.categories;
+
   return (
     <>
       <Header></Header>
@@ -21,7 +32,12 @@ function CreateOrder() {
             <SearchBar></SearchBar>
           </div>
           {/* categories */}
-          <div></div>
+          <div className="mt-6 ml-2">
+            <Slider
+              slides={categories?.map((category: Category) => category.name)}
+              numberOfSlidesPerView={4}
+            ></Slider>
+          </div>
 
           {/* products */}
           <div></div>
