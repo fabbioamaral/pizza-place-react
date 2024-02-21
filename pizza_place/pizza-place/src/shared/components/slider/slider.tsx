@@ -7,8 +7,11 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import './slider.css';
 import { SliderProps } from '../../types/slider-props';
+import { useState } from 'react';
 
 const Slider = (props: SliderProps) => {
+  const [slideSelected, setSlideSelected] = useState();
+
   return (
     <>
       <Swiper
@@ -17,9 +20,17 @@ const Slider = (props: SliderProps) => {
         slidesPerView={props.numberOfSlidesPerView}
         className="slider"
       >
-        {props.slides?.map((slide: string) => (
-          <SwiperSlide>
-            <Button variant="outlined">{slide}</Button>
+        {props.slides?.map((slide: any) => (
+          <SwiperSlide key={slide.id}>
+            <Button
+              variant={slide.name === slideSelected ? 'contained' : 'outlined'}
+              onClick={() => {
+                setSlideSelected(slide.name);
+                props.onAction(slide);
+              }}
+            >
+              {slide.name}
+            </Button>
           </SwiperSlide>
         ))}
       </Swiper>

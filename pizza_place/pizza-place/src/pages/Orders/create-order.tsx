@@ -5,15 +5,24 @@ import Slider from '../../shared/components/slider/slider';
 import { GET_CATEGORIES } from '../Categories/graphql/get-categories';
 import ClientDetails from './components/client-details';
 import SelectedProducts from './components/selected-products';
-import { client } from '../..';
 import { Category } from '../Categories/types/category';
+import ProductCard from './components/product-card';
+import { GET_PRODUCTS } from '../Products/graphql/get-products';
+import { Product } from '../Products/types/product';
+import { useEffect, useState } from 'react';
 
 function CreateOrder() {
-  const categoriesData = useQuery(GET_CATEGORIES);
-  // reading cache
-  const categories: Category[] = client.readQuery({
-    query: GET_CATEGORIES,
-  })?.categories;
+  const [category, setCategory] = useState<Category>({ id: 1, name: 'Pizzas' });
+  const [productsToShow, setProductsToShow] = useState<Product[]>([]);
+
+  const categories = useQuery(GET_CATEGORIES)?.data?.categories;
+  const products = useQuery(GET_PRODUCTS)?.data?.products;
+
+  useEffect(() => {
+    setProductsToShow(
+      products?.filter((product: Product) => product.categoryId === category.id)
+    );
+  }, [category, products]);
 
   return (
     <>
@@ -34,13 +43,29 @@ function CreateOrder() {
           {/* categories */}
           <div className="mt-6 ml-2">
             <Slider
-              slides={categories?.map((category: Category) => category.name)}
+              slides={categories}
               numberOfSlidesPerView={4}
+              onAction={setCategory}
             ></Slider>
           </div>
 
           {/* products */}
-          <div></div>
+          <div className="flex flex-wrap justify-center mt-5 mx-10">
+            {productsToShow && productsToShow.length ? (
+              productsToShow?.map((product: Product) => (
+                <ProductCard
+                  id={product.id}
+                  key={product.id}
+                  name={product.name}
+                  price={product.price}
+                  categoryId={product.categoryId}
+                  size={product.size}
+                ></ProductCard>
+              ))
+            ) : (
+              <p className="mt-10 font-bold">No products to display.</p>
+            )}
+          </div>
         </div>
       </div>
     </>

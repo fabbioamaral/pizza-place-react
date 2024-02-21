@@ -1,4 +1,5 @@
 export interface SliderProps {
-  slides: string[];
+  slides: any[];
   numberOfSlidesPerView: number;
+  onAction: (data?: any) => void;
 }

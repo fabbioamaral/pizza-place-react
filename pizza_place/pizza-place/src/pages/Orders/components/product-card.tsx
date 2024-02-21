@@ -1,7 +1,7 @@
 import { Product } from '../../Products/types/product';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-function ProductCard(props?: Product) {
+function ProductCard(props: Product) {
   return (
     <>
       <div className="flex flex-col items-center pt-2 px-4 cursor-pointer rounded border w-36 h-32 m-5">
