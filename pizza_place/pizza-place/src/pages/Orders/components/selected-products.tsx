@@ -1,8 +1,15 @@
 import { Button } from '@mui/material';
-import { SelectedProductsProps } from '../types/selected-products';
+import {
+  SelectedProduct,
+  SelectedProductsProps,
+} from '../types/selected-products';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function SelectedProducts(props?: SelectedProductsProps) {
+function SelectedProducts(
+  props: SelectedProductsProps & {
+    onAction: (product: SelectedProduct) => void;
+  }
+) {
   return (
     <>
       <div>
@@ -14,28 +21,20 @@ function SelectedProducts(props?: SelectedProductsProps) {
           <p className="w-1/6"></p>
         </div>
         {/* body */}
-        <div className="flex p-1 text-sm border-b-2">
-          <p className="w-1/6 text-center">1</p>
-          <p className="w-3/6">Pizza GG Frango Catupiry</p>
-          <p className="w-1/6 text-center">R$ 32.90</p>
-          <p className="w-1/6 text-center">
-            <DeleteIcon
-              className="cursor-pointer"
-              onClick={() => console.log('delete clicked')}
-            ></DeleteIcon>
-          </p>
-        </div>
-        <div className="flex p-1 text-sm border-b-2">
-          <p className="w-1/6 text-center">1</p>
-          <p className="w-3/6">Pizza GG Frango Catupiry</p>
-          <p className="w-1/6 text-center">R$ 32.90</p>
-          <p className="w-1/6 text-center">
-            <DeleteIcon
-              className="cursor-pointer"
-              onClick={() => console.log('delete clicked')}
-            ></DeleteIcon>
-          </p>
-        </div>
+        {props?.products &&
+          props.products.map((product: SelectedProduct) => (
+            <div key={product.id} className="flex p-1 text-sm border-b-2">
+              <p className="w-1/6 text-center">{product?.amount}</p>
+              <p className="w-3/6">{product?.name}</p>
+              <p className="w-1/6 text-center">R$ {product?.price}</p>
+              <p className="w-1/6 text-center">
+                <DeleteIcon
+                  className="cursor-pointer"
+                  onClick={() => props.onAction(product)}
+                ></DeleteIcon>
+              </p>
+            </div>
+          ))}
         {/* footer */}
         <div className="mt-20">
           <div className="flex mb-1 pt-2 pl-2">
@@ -44,7 +43,7 @@ function SelectedProducts(props?: SelectedProductsProps) {
           </div>
           <div className="flex mb-1 pl-2">
             <p className="font-bold">Total:</p>
-            <p className="ml-1">R$100.45</p>
+            <p className="ml-1">R${props?.sumPrice}</p>
           </div>
           <div className="flex flex-col flex-wrap py-4 px-1">
             <Button
