@@ -10,10 +10,17 @@ import ProductCard from './components/product-card';
 import { GET_PRODUCTS } from '../Products/graphql/get-products';
 import { Product } from '../Products/types/product';
 import { useEffect, useState } from 'react';
+import { SelectedProductsProps } from './types/selected-products';
 
 function CreateOrder() {
   const [category, setCategory] = useState<Category>({ id: 1, name: 'Pizzas' });
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
+  const [selectedProductsProps, setSelectedProductsProps] =
+    useState<SelectedProductsProps>({
+      products: [],
+      operatorName: 'Clebao',
+      sumPrice: 0,
+    });
 
   const categories = useQuery(GET_CATEGORIES)?.data?.categories;
   const products = useQuery(GET_PRODUCTS)?.data?.products;
@@ -24,6 +31,68 @@ function CreateOrder() {
     );
   }, [category, products]);
 
+  const addProduct = (productSelected: Product) => {
+    const selectedProductPropsList: SelectedProductsProps = JSON.parse(
+      JSON.stringify(selectedProductsProps)
+    );
+    if (
+      selectedProductPropsList.products &&
+      selectedProductPropsList.products.length > 0
+    ) {
+      const isProductPresentInTheListAlready =
+        selectedProductPropsList.products.some(
+          (p) => p.id === productSelected.id
+        );
+
+      if (isProductPresentInTheListAlready) {
+        const productIndex = selectedProductPropsList.products.findIndex(
+          (p) => p.id === productSelected.id
+        );
+        selectedProductPropsList.products[productIndex].amount += 1;
+      } else {
+        selectedProductPropsList.products.push({
+          id: productSelected!.id,
+          name: productSelected!.name,
+          price: productSelected!.price,
+          categoryId: productSelected!.categoryId,
+          size: productSelected!.size,
+          amount: 1,
+        });
+      }
+    } else {
+      selectedProductPropsList.products.push({
+        id: productSelected!.id,
+        name: productSelected!.name,
+        price: productSelected!.price,
+        categoryId: productSelected!.categoryId,
+        size: productSelected!.size,
+        amount: 1,
+      });
+    }
+
+    // add the cost of the product that has been just added to the sum price
+    selectedProductPropsList.sumPrice += productSelected.price;
+    setSelectedProductsProps(selectedProductPropsList);
+  };
+
+  const deleteProduct = (productSelected: Product) => {
+    const selectedProductPropsList: SelectedProductsProps = JSON.parse(
+      JSON.stringify(selectedProductsProps)
+    );
+
+    const productIndex = selectedProductPropsList.products.findIndex(
+      (p) => p.id === productSelected.id
+    );
+    selectedProductPropsList.products[productIndex].amount -= 1;
+
+    if (selectedProductPropsList.products[productIndex].amount === 0) {
+      selectedProductPropsList.products.splice(productIndex, 1);
+    }
+
+    selectedProductPropsList.sumPrice -= productSelected.price;
+    setSelectedProductsProps(selectedProductPropsList);
+  };
+
   return (
     <>
       <Header></Header>
@@ -31,7 +100,11 @@ function CreateOrder() {
         {/* left section, client information, selected products, etc */}
         <div className="w-4/12 border-2 border-gray-600">
           <ClientDetails></ClientDetails>
-          <SelectedProducts></SelectedProducts>
+          <SelectedProducts
+            products={selectedProductsProps.products}
+            sumPrice={selectedProductsProps.sumPrice}
+            onAction={deleteProduct}
+          ></SelectedProducts>
         </div>
 
         {/* search bar, categories, products */}
@@ -60,6 +133,7 @@ function CreateOrder() {
                   price={product.price}
                   categoryId={product.categoryId}
                   size={product.size}
+                  onAction={addProduct}
                 ></ProductCard>
               ))
             ) : (
