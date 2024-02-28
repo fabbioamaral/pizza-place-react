@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
+import SearchClient from './pages/Clients/search-client';
 import CreateOrder from './pages/Orders/create-order';
 import ListOrders from './pages/Orders/list-orders';
 import CreateProduct from './pages/Products/create-product';
@@ -28,6 +29,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/search-client" element={<SearchClient />} />
         <Route path="/create-order" element={<CreateOrder />} />
         <Route path="/list-orders" element={<ListOrders />} />
         <Route path="/create-product" element={<CreateProduct />} />
