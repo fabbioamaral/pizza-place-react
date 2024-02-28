@@ -9,11 +9,10 @@ import { Category } from '../Categories/types/category';
 import ProductCard from './components/product-card';
 import { GET_PRODUCTS } from '../Products/graphql/get-products';
 import { Product } from '../Products/types/product';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SelectedProductsProps } from './types/selected-products';
 
 function CreateOrder() {
-  const [category, setCategory] = useState<Category>({ id: 1, name: 'Pizzas' });
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
   const [selectedProductsProps, setSelectedProductsProps] =
     useState<SelectedProductsProps>({
@@ -25,11 +24,11 @@ function CreateOrder() {
   const categories = useQuery(GET_CATEGORIES)?.data?.categories;
   const products = useQuery(GET_PRODUCTS)?.data?.products;
 
-  useEffect(() => {
+  const setProductToDisplay = (category: Category) => {
     setProductsToShow(
       products?.filter((product: Product) => product.categoryId === category.id)
     );
-  }, [category, products]);
+  };
 
   const addProduct = (productSelected: Product) => {
     const selectedProductPropsList: SelectedProductsProps = JSON.parse(
@@ -70,6 +69,7 @@ function CreateOrder() {
       });
     }
 
+    console.log('executei!');
     // add the cost of the product that has been just added to the sum price
     selectedProductPropsList.sumPrice += productSelected.price;
     setSelectedProductsProps(selectedProductPropsList);
@@ -118,7 +118,7 @@ function CreateOrder() {
             <Slider
               slides={categories}
               numberOfSlidesPerView={4}
-              onAction={setCategory}
+              onAction={setProductToDisplay}
             ></Slider>
           </div>
 
