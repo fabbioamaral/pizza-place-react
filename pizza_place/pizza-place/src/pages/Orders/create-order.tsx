@@ -11,6 +11,7 @@ import { GET_PRODUCTS } from '../Products/graphql/get-products';
 import { Product } from '../Products/types/product';
 import { useState } from 'react';
 import { SelectedProductsProps } from './types/selected-products';
+import ClientInfo from '../Clients/components/client-info';
 
 function CreateOrder() {
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
@@ -99,7 +100,7 @@ function CreateOrder() {
       <div className="pt-8 pl-4 flex">
         {/* left section, client information, selected products, etc */}
         <div className="w-4/12 border-2 border-gray-600">
-          <ClientDetails></ClientDetails>
+          <ClientInfo />
           <SelectedProducts
             products={selectedProductsProps.products}
             sumPrice={selectedProductsProps.sumPrice}
