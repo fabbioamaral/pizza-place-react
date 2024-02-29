@@ -7,7 +7,7 @@ export default function AddressCard({
 }) {
   return (
     <>
-      <div className="p-2 mb-2 bg-gray-200 rounded">
+      <div className="p-2 mb-2 bg-gray-200 rounded cursor-pointer">
         <p>{addressSummaryText}</p>
       </div>
     </>
