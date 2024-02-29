@@ -5,15 +5,15 @@ import ClientInfo from './client-info';
 import { Client } from '../types/client';
 import { Address } from '../../Addresses/types/address';
 
-function ClientDetails(props: Client) {
+function ClientDetails(props: { client: Client }) {
   return (
     <>
       <div className="rounded border p-6 mx-10">
         <div className="flex">
-          <ClientInfo client={props} />
+          <ClientInfo client={props.client} />
           <div className="p-4 w-full">
-            {props.addresses &&
-              props.addresses.map((address: Address) => (
+            {props.client.addresses &&
+              props.client.addresses.map((address: Address) => (
                 <AddressCard
                   addressSummaryText={`${address.street}, ${address.number},${address.suburbId}, ${address.city} }`}
                 />
