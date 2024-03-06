@@ -12,10 +12,13 @@ function ClientDetails(props: { client: Client }) {
         <div className="flex">
           <ClientInfo client={props.client} />
           <div className="p-4 w-full">
+            <p className="font-bold mb-1">Please pick an address:</p>
             {props.client.addresses &&
               props.client.addresses.map((address: Address) => (
                 <AddressCard
-                  addressSummaryText={`${address.street}, ${address.number},${address.suburbId}, ${address.city} }`}
+                  key={address.id}
+                  addressSummaryText={`${address.street}, ${address.number},${address.suburbId}, ${address.city} `}
+                  selected={address.selected}
                 />
               ))}
             <div className="flex flex-col items-center mt-4">

@@ -2,12 +2,19 @@
 
 export default function AddressCard({
   addressSummaryText,
+  selected,
 }: {
   addressSummaryText: string;
+  selected: boolean;
 }) {
   return (
     <>
-      <div className="p-2 mb-2 bg-gray-200 rounded cursor-pointer">
+      <div
+        className={
+          'p-2 mb-2 bg-gray-200 rounded cursor-pointer ' +
+          (selected ? 'border-2 border-gray-500' : '')
+        }
+      >
         <p>{addressSummaryText}</p>
       </div>
     </>
