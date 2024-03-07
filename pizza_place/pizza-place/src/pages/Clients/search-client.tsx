@@ -11,11 +11,13 @@ import { useState } from 'react';
 import axios from 'axios';
 import ClientDetails from './components/client-details';
 import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
+import { useNavigate } from 'react-router-dom';
 
 function SearchClient() {
   const [clientNumber, setClientNumber] = useState('');
   const [client, setClient] = useState();
   const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -60,6 +62,14 @@ function SearchClient() {
     </Button>
   );
 
+  const goToOrderPage = () => {
+    navigate('/create-order', {
+      state: {
+        client,
+      },
+    });
+  };
+
   return (
     <>
       <Header></Header>
@@ -82,7 +92,24 @@ function SearchClient() {
           </FormControl>
         </form>
       </div>
-      {client ? <ClientDetails client={client} /> : ''}
+      {client ? (
+        <>
+          <ClientDetails client={client} />
+          <div className="flex justify-center mt-10">
+            <Button
+              variant="contained"
+              sx={{ mb: 1, width: 0.4 }}
+              type="submit"
+              color="success"
+              onClick={goToOrderPage}
+            >
+              Next
+            </Button>
+          </div>
+        </>
+      ) : (
+        ''
+      )}
       <Snackbar
         open={snackContent.shouldDisplay}
         autoHideDuration={5000}
