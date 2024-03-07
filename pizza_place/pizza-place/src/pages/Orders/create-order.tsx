@@ -3,7 +3,6 @@ import Header from '../../shared/components/header';
 import SearchBar from '../../shared/components/search-bar';
 import Slider from '../../shared/components/slider/slider';
 import { GET_CATEGORIES } from '../Categories/graphql/get-categories';
-import ClientDetails from './components/client-details';
 import SelectedProducts from './components/selected-products';
 import { Category } from '../Categories/types/category';
 import ProductCard from './components/product-card';
@@ -12,6 +11,7 @@ import { Product } from '../Products/types/product';
 import { useState } from 'react';
 import { SelectedProductsProps } from './types/selected-products';
 import ClientInfo from '../Clients/components/client-info';
+import { useLocation } from 'react-router-dom';
 
 function CreateOrder() {
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
@@ -21,6 +21,9 @@ function CreateOrder() {
       operatorName: 'Clebao',
       sumPrice: 0,
     });
+
+  const location = useLocation();
+  const client = location.state.client;
 
   const categories = useQuery(GET_CATEGORIES)?.data?.categories;
   const products = useQuery(GET_PRODUCTS)?.data?.products;
@@ -100,7 +103,7 @@ function CreateOrder() {
       <div className="pt-8 pl-4 flex">
         {/* left section, client information, selected products, etc */}
         <div className="w-4/12 border-2 border-gray-600">
-          <ClientInfo />
+          <ClientInfo client={client} />
           <SelectedProducts
             products={selectedProductsProps.products}
             sumPrice={selectedProductsProps.sumPrice}
