@@ -4,5 +4,9 @@ export interface Address {
   number: string;
   suburbId: number;
   city: string;
-  selected: boolean;
+  isSelected: boolean; // exists only on FE
+  isDefault: boolean;
 }
+
+// 3: alterar o BE para incluir propriedade isDefault no Address - Done
+// TODO: propriedade isSelected existe apenas no FE, pois nao ha necessidade de registrar isso no BE.

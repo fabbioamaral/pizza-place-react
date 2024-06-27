@@ -12,10 +12,11 @@ import axios from 'axios';
 import ClientDetails from './components/client-details';
 import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
 import { useNavigate } from 'react-router-dom';
+import { Client } from './types/client';
 
 function SearchClient() {
   const [clientNumber, setClientNumber] = useState('');
-  const [client, setClient] = useState();
+  const [client, setClient] = useState<Client>();
   const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
   const navigate = useNavigate();
 
@@ -62,6 +63,21 @@ function SearchClient() {
     </Button>
   );
 
+  const selectAddress = (addressId: number) => {
+    const clientObject = client;
+    const indexPreviousSelectedAddress: number = client!.addresses.findIndex(
+      (address) => address.isSelected === true
+    );
+    clientObject!.addresses[indexPreviousSelectedAddress].isSelected = false;
+
+    const indexNewlySelectedAddress = client!.addresses.findIndex(
+      (address) => address.id === addressId
+    );
+    clientObject!.addresses[indexNewlySelectedAddress].isSelected = true;
+
+    setClient(clientObject);
+  };
+
   const goToOrderPage = () => {
     navigate('/create-order', {
       state: {
@@ -94,7 +110,7 @@ function SearchClient() {
       </div>
       {client ? (
         <>
-          <ClientDetails client={client} />
+          <ClientDetails client={client} onAddressSelected={selectAddress} />
           <div className="flex justify-center mt-10">
             <Button
               variant="contained"
