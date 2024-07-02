@@ -5,15 +5,16 @@ import Modal from '@mui/material/Modal';
 import { ModalPropsType } from '../../../shared/types/modal';
 import {
   FormControl,
+  FormControlLabel,
   FormLabel,
-  MenuItem,
-  Select,
+  Radio,
+  RadioGroup,
   TextField,
 } from '@mui/material';
-import { useState } from 'react';
-import { SIZES } from '../../../shared/constants/sizes';
-import { Category } from '../../Categories/types/category';
+
 import { FieldValues, useForm } from 'react-hook-form';
+import { useMutation } from '@apollo/react-hooks';
+import { CREATE_ADDRESS } from '../graphql/create-address';
 
 function ModalAddAddress(props: ModalPropsType) {
   const {
@@ -21,6 +22,8 @@ function ModalAddAddress(props: ModalPropsType) {
     handleSubmit,
     formState: { isValid },
   } = useForm();
+
+  const [createAddress] = useMutation(CREATE_ADDRESS);
 
   const styleModal = {
     position: 'absolute' as 'absolute',
@@ -34,7 +37,22 @@ function ModalAddAddress(props: ModalPropsType) {
   };
 
   const onFormSubmit = async (data: FieldValues) => {
+    if (!isValid) return;
+    if (!props?.data?.client?.id) return;
+
     console.log(data);
+    const result = await createAddress({
+      variables: {
+        street: data.street,
+        number: data.number,
+        suburbId: 1, // esse campo deve ser um menu dropdown
+        clientId: props.data.client.id,
+        additionalInfo: data.additionalInfo,
+        isDefault: true,
+      },
+    });
+
+    console.log(result);
   };
 
   return (
@@ -109,6 +127,28 @@ function ModalAddAddress(props: ModalPropsType) {
                     {...register('city')}
                   ></TextField>
                 </div>
+              </div>
+              <div>
+                <FormLabel id="demo-radio-buttons-group-label">
+                  Set this address as default?
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="true"
+                  name="radio-buttons-group"
+                  row
+                >
+                  <FormControlLabel
+                    value="true"
+                    control={<Radio />}
+                    label="Yes"
+                  />
+                  <FormControlLabel
+                    value="false"
+                    control={<Radio />}
+                    label="No"
+                  />
+                </RadioGroup>
               </div>
             </FormControl>
             <div className="mt-4">
