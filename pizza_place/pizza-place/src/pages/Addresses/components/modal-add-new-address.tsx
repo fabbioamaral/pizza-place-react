@@ -40,19 +40,16 @@ function ModalAddAddress(props: ModalPropsType) {
     if (!isValid) return;
     if (!props?.data?.client?.id) return;
 
-    console.log(data);
     const result = await createAddress({
       variables: {
         street: data.street,
         number: data.number,
-        suburbId: 1, // esse campo deve ser um menu dropdown
+        suburbId: 1, // this field must be a menu dropdown
         clientId: props.data.client.id,
         additionalInfo: data.additionalInfo,
-        isDefault: true,
+        isDefault: data.isDefault === 'true' ? true : false, // workaround since the radio group is return the value as string
       },
     });
-
-    console.log(result);
   };
 
   return (
@@ -133,18 +130,19 @@ function ModalAddAddress(props: ModalPropsType) {
                   Set this address as default?
                 </FormLabel>
                 <RadioGroup
+                  {...register('isDefault')}
                   aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue="true"
+                  defaultValue={true}
                   name="radio-buttons-group"
                   row
                 >
                   <FormControlLabel
-                    value="true"
+                    value={true}
                     control={<Radio />}
                     label="Yes"
                   />
                   <FormControlLabel
-                    value="false"
+                    value={false}
                     control={<Radio />}
                     label="No"
                   />
