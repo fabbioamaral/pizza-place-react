@@ -2,10 +2,10 @@ export interface Address {
   id: number;
   street: string;
   number: string;
-  suburbId: number;
+  suburb_id: number;
   city: string;
-  isSelected: boolean; // exists only on FE
-  isDefault: boolean;
+  selected: boolean; // exists only on FE
+  default: boolean;
 }
 
 // 3: alterar o BE para incluir propriedade isDefault no Address - Done
