@@ -7,11 +7,30 @@ import { Address } from '../../Addresses/types/address';
 import { useState } from 'react';
 import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
 
-function ClientDetails(props: {
-  client: Client;
-  onAddressSelected: (data?: any) => void;
-}) {
+function ClientDetails(props: { client: Client }) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
+  const [addresses, setAddresses] = useState(props.client.addresses);
+
+  const setIsSelectedAddressProperty = () => {
+    props.client.addresses.map(
+      (address) => (address.selected = address.default ? true : false)
+    );
+  };
+  setIsSelectedAddressProperty();
+
+  const onAddressSelected = (addressId: string | number) => {
+    const addressesCopy: Address[] = JSON.parse(JSON.stringify(addresses));
+    const indexPreviousSelectedAddress: number = addressesCopy.findIndex(
+      (address: Address) => address.selected === true
+    );
+    addressesCopy[indexPreviousSelectedAddress].selected = false;
+
+    const indexNewlySelectedAddress = addressesCopy.findIndex(
+      (address) => address.id === addressId
+    );
+    addressesCopy[indexNewlySelectedAddress].selected = true;
+    setAddresses(addressesCopy);
+  };
 
   return (
     <>
@@ -20,13 +39,15 @@ function ClientDetails(props: {
           <ClientInfo client={props.client} />
           <div className="p-4 w-full">
             <p className="font-bold mb-1">Please pick an address:</p>
-            {props.client.addresses &&
-              props.client.addresses.map((address: Address) => (
-                <div onClick={() => props.onAddressSelected(address.id)}>
+            {addresses &&
+              addresses.map((address: Address) => (
+                <div
+                  key={address.id}
+                  onClick={() => onAddressSelected(address.id)}
+                >
                   <AddressCard
-                    key={address.id}
-                    addressSummaryText={`${address.street}, ${address.number},${address.suburbId}, ${address.city} `}
-                    selected={address.isSelected}
+                    addressSummaryText={`${address.street}, ${address.number},${address.suburb_id}, ${address.city} `}
+                    selected={address.selected}
                   />
                 </div>
               ))}
