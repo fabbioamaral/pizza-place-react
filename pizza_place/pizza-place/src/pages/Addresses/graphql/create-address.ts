@@ -6,6 +6,7 @@ export const CREATE_ADDRESS = gql`
     $number: String!
     $suburbId: ID!
     $clientId: ID!
+    $city: String!
     $additionalInfo: String
     $isDefault: Boolean!
   ) {
@@ -16,6 +17,7 @@ export const CREATE_ADDRESS = gql`
           number: $number
           suburbId: $suburbId
           clientId: $clientId
+          city: $city
           additionalInfo: $additionalInfo
           default: $isDefault
         }
