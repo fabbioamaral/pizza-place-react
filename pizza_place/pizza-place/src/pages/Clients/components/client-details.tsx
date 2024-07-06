@@ -36,8 +36,10 @@ function ClientDetails(props: { client: Client }) {
     <>
       <div className="rounded border p-6 mx-10">
         <div className="flex">
-          <ClientInfo client={props.client} />
-          <div className="p-4 w-full">
+          <div className="w-3/12">
+            <ClientInfo client={props.client} />
+          </div>
+          <div className="p-4 w-9/12">
             <p className="font-bold mb-1">Please pick an address:</p>
             {addresses &&
               addresses.map((address: Address) => (
@@ -82,7 +84,5 @@ function ClientDetails(props: { client: Client }) {
 }
 
 export default ClientDetails;
-
-// TODO: criar função para quando clicar em um AddressCard, alterar a propriedad daquele endereço para selected, e definir como false a propriedade selected do AddressCard que estava selecionado anteriormente.
 
 // TODO: desenvolver lógica para adicionar cliente em caso que não se encontra o número informado na busca. Talvez deixar pra fazer isso quando tiver desenvolvendo a parte de cliente
