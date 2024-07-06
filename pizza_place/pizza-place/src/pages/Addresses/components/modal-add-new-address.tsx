@@ -46,8 +46,9 @@ function ModalAddAddress(props: ModalPropsType) {
         number: data.number,
         suburbId: 1, // this field must be a menu dropdown
         clientId: props.data.client.id,
+        city: data.city,
         additionalInfo: data.additionalInfo,
-        isDefault: data.isDefault === 'true' ? true : false, // workaround since the radio group is return the value as string
+        isDefault: data.default === 'true' ? true : false, // workaround since the radio group is return the value as string
       },
     });
   };
@@ -130,21 +131,23 @@ function ModalAddAddress(props: ModalPropsType) {
                   Set this address as default?
                 </FormLabel>
                 <RadioGroup
-                  {...register('isDefault')}
+                  {...register('default')}
                   aria-labelledby="demo-radio-buttons-group-label"
-                  defaultValue={true}
                   name="radio-buttons-group"
                   row
+                  defaultValue={true}
                 >
                   <FormControlLabel
                     value={true}
                     control={<Radio />}
                     label="Yes"
+                    {...register('default')}
                   />
                   <FormControlLabel
                     value={false}
                     control={<Radio />}
                     label="No"
+                    {...register('default')}
                   />
                 </RadioGroup>
               </div>
