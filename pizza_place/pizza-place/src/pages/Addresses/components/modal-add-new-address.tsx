@@ -40,17 +40,26 @@ function ModalAddAddress(props: ModalPropsType) {
     if (!isValid) return;
     if (!props?.data?.client?.id) return;
 
-    const result = await createAddress({
-      variables: {
-        street: data.street,
-        number: data.number,
-        suburbId: 1, // this field must be a menu dropdown
-        clientId: props.data.client.id,
-        city: data.city,
-        additionalInfo: data.additionalInfo,
-        isDefault: data.default === 'true' ? true : false, // workaround since the radio group is return the value as string
-      },
-    });
+    try {
+      await createAddress({
+        variables: {
+          street: data.street,
+          number: data.number,
+          suburbId: 1, // this field must be a menu dropdown
+          clientId: props.data.client.id,
+          city: data.city,
+          additionalInfo: data.additionalInfo,
+          isDefault: data.default === 'true' ? true : false, // workaround since the radio group is return the value as string
+        },
+      });
+
+      props.onAction();
+      props.onClose();
+    } catch (error) {
+      console.error('[ModalAddAddress] Error adding a new address');
+      props.onAction(false);
+      // TODO: add snack error message
+    }
   };
 
   return (

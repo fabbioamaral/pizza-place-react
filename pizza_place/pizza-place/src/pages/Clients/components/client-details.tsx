@@ -4,19 +4,18 @@ import AddressCard from '../../Addresses/components/AddressCard';
 import ClientInfo from './client-info';
 import { Client } from '../types/client';
 import { Address } from '../../Addresses/types/address';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
+import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
+import { useQuery } from '@apollo/client';
 
 function ClientDetails(props: { client: Client }) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const [addresses, setAddresses] = useState(props.client.addresses);
-
-  const setIsSelectedAddressProperty = () => {
-    props.client.addresses.map(
-      (address) => (address.selected = address.default ? true : false)
-    );
-  };
-  setIsSelectedAddressProperty();
+  const [shouldRefetchAddress, setShouldRefetchAddress] = useState(false);
+  const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
+    variables: { clientId: props.client.id },
+  });
 
   const onAddressSelected = (addressId: string | number) => {
     const addressesCopy: Address[] = JSON.parse(JSON.stringify(addresses));
@@ -32,6 +31,18 @@ function ClientDetails(props: { client: Client }) {
     setAddresses(addressesCopy);
   };
 
+  useEffect(() => {
+    console.log(data);
+    setAddresses(data?.addresses);
+  }, [data]);
+
+  // const setIsSelectedAddressProperty = () => {
+  //   addresses?.map(
+  //     (address) => (address.selected = address.default ? true : false)
+  //   );
+  // };
+  // setIsSelectedAddressProperty();
+
   return (
     <>
       <div className="rounded border p-6 mx-10">
@@ -40,7 +51,11 @@ function ClientDetails(props: { client: Client }) {
             <ClientInfo client={props.client} />
           </div>
           <div className="p-4 w-9/12">
-            <p className="font-bold mb-1">Please pick an address:</p>
+            {!!addresses?.length ? (
+              <p className="font-bold mb-1">Please pick an address:</p>
+            ) : (
+              <p className="font-bold mb-1">Please add an address:</p>
+            )}
             {addresses &&
               addresses.map((address: Address) => (
                 <div
@@ -71,9 +86,7 @@ function ClientDetails(props: { client: Client }) {
           <ModalAddAddress
             isOpen={isAddAddressModalOpen}
             onClose={() => setIsAddAddressModalOpen(false)}
-            onAction={() => {
-              // a definir
-            }}
+            onAction={refetch}
             onDismiss={() => setIsAddAddressModalOpen(false)}
             data={{ client: props.client }}
           ></ModalAddAddress>
