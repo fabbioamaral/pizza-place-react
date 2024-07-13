@@ -9,7 +9,10 @@ import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
 import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
 import { useQuery } from '@apollo/client';
 
-function ClientDetails(props: { client: Client }) {
+function ClientDetails(props: {
+  client: Client;
+  setSelectedAddress: React.Dispatch<React.SetStateAction<Address | undefined>>;
+}) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
     variables: { clientId: props.client.id },
@@ -26,8 +29,10 @@ function ClientDetails(props: { client: Client }) {
         };
       });
       setAddresses(addressesData);
+
+      props.setSelectedAddress(getSelectedAddress);
     }
-  }, [data, loading]);
+  }, [data, loading, props, getSelectedAddress]);
 
   const onAddressSelected = (addressId: string | number) => {
     const addressesCopy: Address[] = JSON.parse(JSON.stringify(addresses));
@@ -41,7 +46,12 @@ function ClientDetails(props: { client: Client }) {
     );
     addressesCopy[indexNewlySelectedAddress].selected = true;
     setAddresses(addressesCopy);
+    props.setSelectedAddress(getSelectedAddress);
   };
+
+  function getSelectedAddress(): Address {
+    return addresses.find((address: Address) => address.selected);
+  }
 
   return (
     <>
