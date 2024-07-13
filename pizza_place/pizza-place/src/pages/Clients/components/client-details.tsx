@@ -9,10 +9,16 @@ import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
 import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
 import { useQuery } from '@apollo/client';
 
-function ClientDetails(props: { client: Client }) {
+function ClientDetails({
+  client,
+  setClient,
+}: {
+  client: Client;
+  setClient: React.Dispatch<React.SetStateAction<Client | undefined>>;
+}) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
-    variables: { clientId: props.client.id },
+    variables: { clientId: client.id },
   });
   const [addresses, setAddresses] = useState(data?.addresses);
 
@@ -26,6 +32,7 @@ function ClientDetails(props: { client: Client }) {
         };
       });
       setAddresses(addressesData);
+      setClient({ ...client, addresses: addressesData });
     }
   }, [data, loading]);
 
@@ -41,6 +48,7 @@ function ClientDetails(props: { client: Client }) {
     );
     addressesCopy[indexNewlySelectedAddress].selected = true;
     setAddresses(addressesCopy);
+    setClient({ ...client, addresses: addressesCopy });
   };
 
   return (
@@ -48,7 +56,7 @@ function ClientDetails(props: { client: Client }) {
       <div className="rounded border p-6 mx-10">
         <div className="flex">
           <div className="w-3/12">
-            <ClientInfo client={props.client} />
+            <ClientInfo client={client} />
           </div>
           <div className="p-4 w-9/12">
             {!!addresses?.length ? (
@@ -88,7 +96,7 @@ function ClientDetails(props: { client: Client }) {
             onClose={() => setIsAddAddressModalOpen(false)}
             onAction={refetch}
             onDismiss={() => setIsAddAddressModalOpen(false)}
-            data={{ client: props.client }}
+            data={{ client: client }}
           ></ModalAddAddress>
         )}
       </div>
