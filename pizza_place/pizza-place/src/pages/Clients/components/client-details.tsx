@@ -11,11 +11,23 @@ import { useQuery } from '@apollo/client';
 
 function ClientDetails(props: { client: Client }) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
-  const [addresses, setAddresses] = useState(props.client.addresses);
-  const [shouldRefetchAddress, setShouldRefetchAddress] = useState(false);
   const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
     variables: { clientId: props.client.id },
   });
+  const [addresses, setAddresses] = useState(data?.addresses);
+
+  useEffect(() => {
+    // setting the selected property to addresses
+    if (!loading && !!data) {
+      const addressesData = data?.addresses?.map((address: Address) => {
+        return {
+          ...address,
+          selected: address.default ? true : false,
+        };
+      });
+      setAddresses(addressesData);
+    }
+  }, [data, loading]);
 
   const onAddressSelected = (addressId: string | number) => {
     const addressesCopy: Address[] = JSON.parse(JSON.stringify(addresses));
@@ -30,18 +42,6 @@ function ClientDetails(props: { client: Client }) {
     addressesCopy[indexNewlySelectedAddress].selected = true;
     setAddresses(addressesCopy);
   };
-
-  useEffect(() => {
-    console.log(data);
-    setAddresses(data?.addresses);
-  }, [data]);
-
-  // const setIsSelectedAddressProperty = () => {
-  //   addresses?.map(
-  //     (address) => (address.selected = address.default ? true : false)
-  //   );
-  // };
-  // setIsSelectedAddressProperty();
 
   return (
     <>
