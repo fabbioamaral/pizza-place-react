@@ -12,8 +12,11 @@ import { useState } from 'react';
 import { SelectedProductsProps } from './types/selected-products';
 import ClientInfo from '../Clients/components/client-info';
 import { useLocation } from 'react-router-dom';
+import ModalSelectPizza from './components/modal-select-pizza-flavour';
 
 function CreateOrder() {
+  const [isSelectPizzaFlavourModalOpen, setIsSelectPizzaFlavourModalOpen] =
+    useState(false);
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
   const [selectedProductsProps, setSelectedProductsProps] =
     useState<SelectedProductsProps>({
@@ -130,15 +133,20 @@ function CreateOrder() {
           <div className="flex flex-wrap justify-center mt-5 mx-10">
             {productsToShow && productsToShow.length ? (
               productsToShow?.map((product: Product) => (
-                <ProductCard
-                  id={product.id}
+                <div
+                  onClick={() => setIsSelectPizzaFlavourModalOpen(true)}
                   key={product.id}
-                  name={product.name}
-                  price={product.price}
-                  categoryId={product.categoryId}
-                  size={product.size}
-                  onAction={addProduct}
-                ></ProductCard>
+                >
+                  <ProductCard
+                    id={product.id}
+                    key={product.id}
+                    name={product.name}
+                    price={product.price}
+                    categoryId={product.categoryId}
+                    size={product.size}
+                    onAction={addProduct}
+                  ></ProductCard>
+                </div>
               ))
             ) : (
               <p className="mt-10 font-bold">No products to display.</p>
@@ -146,6 +154,15 @@ function CreateOrder() {
           </div>
         </div>
       </div>
+      {isSelectPizzaFlavourModalOpen && (
+        <ModalSelectPizza
+          isOpen={isSelectPizzaFlavourModalOpen}
+          onClose={() => setIsSelectPizzaFlavourModalOpen(false)}
+          onAction={() => {}}
+          onDismiss={() => setIsSelectPizzaFlavourModalOpen(false)}
+          data={{ client: client }}
+        ></ModalSelectPizza>
+      )}
     </>
   );
 }
