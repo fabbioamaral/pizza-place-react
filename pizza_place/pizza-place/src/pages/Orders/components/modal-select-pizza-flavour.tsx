@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { PizzaCrust } from '../../PizzaCrusts/types/pizza-crust';
 import PizzaAttributesSelectionSection from './pizza-attributes-selection';
 import { PizzaFlavour } from '../../PizzaFlavours/type/pizza-flavour';
+import Button from '@mui/material/Button';
 
 function ModalSelectPizza(props: ModalPropsType) {
   const [selectedCrust, setSelectedCrust] = useState<PizzaCrust[]>();
@@ -123,7 +124,7 @@ function ModalSelectPizza(props: ModalPropsType) {
     >
       <Box sx={styleModal}>
         <Typography id="modal-modal-title" variant="h5" component="h2">
-          Choose Pizza Flavour
+          Choose Pizza Crust & Flavour
         </Typography>
 
         <PizzaAttributesSelectionSection
@@ -145,6 +146,15 @@ function ModalSelectPizza(props: ModalPropsType) {
           onDelete={handleDeleteFlavour}
           onSelection={handleSelectFlavour}
         />
+
+        <div className="mt-8">
+          <Button sx={{ mr: 2 }} variant="outlined" type="submit">
+            Save
+          </Button>
+          <Button variant="outlined" onClick={props.onDismiss}>
+            Dismiss
+          </Button>
+        </div>
       </Box>
     </Modal>
   );

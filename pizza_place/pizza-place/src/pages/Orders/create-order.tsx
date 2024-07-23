@@ -28,8 +28,11 @@ function CreateOrder() {
   const location = useLocation();
   const client = location.state.client;
 
-  const categories = useQuery(GET_CATEGORIES)?.data?.categories;
+  const categories: Category[] = useQuery(GET_CATEGORIES)?.data?.categories;
   const products = useQuery(GET_PRODUCTS)?.data?.products;
+  const pizzaCategoryId = categories?.find(
+    (category: Category) => category.name.toLowerCase() === 'pizza'
+  )?.id;
 
   const setProductToDisplay = (category: Category) => {
     setProductsToShow(
@@ -76,10 +79,13 @@ function CreateOrder() {
       });
     }
 
-    console.log('executei!');
     // add the cost of the product that has been just added to the sum price
     selectedProductPropsList.sumPrice += productSelected.price;
     setSelectedProductsProps(selectedProductPropsList);
+
+    if (productSelected.categoryId === pizzaCategoryId) {
+      setIsSelectPizzaFlavourModalOpen(true);
+    }
   };
 
   const deleteProduct = (productSelected: Product) => {
@@ -133,10 +139,7 @@ function CreateOrder() {
           <div className="flex flex-wrap justify-center mt-5 mx-10">
             {productsToShow && productsToShow.length ? (
               productsToShow?.map((product: Product) => (
-                <div
-                  onClick={() => setIsSelectPizzaFlavourModalOpen(true)}
-                  key={product.id}
-                >
+                <div key={product.id}>
                   <ProductCard
                     id={product.id}
                     key={product.id}
