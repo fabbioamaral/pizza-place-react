@@ -13,11 +13,14 @@ import { SelectedProductsProps } from './types/selected-products';
 import ClientInfo from '../Clients/components/client-info';
 import { useLocation } from 'react-router-dom';
 import ModalSelectPizza from './components/modal-select-pizza-flavour';
+import { PizzaFlavour } from '../PizzaFlavours/type/pizza-flavour';
+import { PizzaCrust } from '../PizzaCrusts/types/pizza-crust';
 
 function CreateOrder() {
   const [isSelectPizzaFlavourModalOpen, setIsSelectPizzaFlavourModalOpen] =
     useState(false);
   const [productsToShow, setProductsToShow] = useState<Product[]>([]);
+  const [productSelected, setProductSelected] = useState<Product>();
   const [selectedProductsProps, setSelectedProductsProps] =
     useState<SelectedProductsProps>({
       products: [],
@@ -79,12 +82,14 @@ function CreateOrder() {
       });
     }
 
-    // add the cost of the product that has been just added to the sum price
-    selectedProductPropsList.sumPrice += productSelected.price;
-    setSelectedProductsProps(selectedProductPropsList);
-
+    // if product happens to be pizza, the addition to the selected product list will be done after the ModalSelectPizza modal is closed
     if (productSelected.categoryId === pizzaCategoryId) {
       setIsSelectPizzaFlavourModalOpen(true);
+      setProductSelected(productSelected);
+    } else {
+      // add the cost of the product that has been just added to the sum price
+      selectedProductPropsList.sumPrice += productSelected.price;
+      setSelectedProductsProps(selectedProductPropsList);
     }
   };
 
@@ -103,6 +108,27 @@ function CreateOrder() {
     }
 
     selectedProductPropsList.sumPrice -= productSelected.price;
+    setSelectedProductsProps(selectedProductPropsList);
+  };
+
+  const addPizzaAttributes = (
+    pizza: Product,
+    flavours: PizzaFlavour[],
+    crust: PizzaCrust
+  ) => {
+    const pizzaToBeAdded = {
+      ...pizza,
+      pizzaFlavour1: flavours[0],
+      pizzaFlavour2: flavours[1],
+      pizzaCrust: crust,
+      amount: 1,
+    };
+
+    const selectedProductPropsList: SelectedProductsProps = JSON.parse(
+      JSON.stringify(selectedProductsProps)
+    );
+    selectedProductPropsList.products.push(pizzaToBeAdded);
+    selectedProductPropsList.sumPrice += pizzaToBeAdded.price;
     setSelectedProductsProps(selectedProductPropsList);
   };
 
@@ -157,13 +183,14 @@ function CreateOrder() {
           </div>
         </div>
       </div>
+
       {isSelectPizzaFlavourModalOpen && (
         <ModalSelectPizza
           isOpen={isSelectPizzaFlavourModalOpen}
           onClose={() => setIsSelectPizzaFlavourModalOpen(false)}
-          onAction={() => {}}
+          onAction={addPizzaAttributes}
           onDismiss={() => setIsSelectPizzaFlavourModalOpen(false)}
-          data={{ client: client }}
+          data={{ client: client, pizzaToBeAdded: productSelected }}
         ></ModalSelectPizza>
       )}
     </>

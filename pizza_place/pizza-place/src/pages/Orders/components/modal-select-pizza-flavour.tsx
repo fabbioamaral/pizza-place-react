@@ -148,7 +148,20 @@ function ModalSelectPizza(props: ModalPropsType) {
         />
 
         <div className="mt-8">
-          <Button sx={{ mr: 2 }} variant="outlined" type="submit">
+          <Button
+            sx={{ mr: 2 }}
+            variant="outlined"
+            type="submit"
+            onClick={() => {
+              props.onAction(
+                props.data.pizzaToBeAdded,
+                selectedFlavour,
+                selectedCrust
+              );
+
+              props.onDismiss();
+            }}
+          >
             Save
           </Button>
           <Button variant="outlined" onClick={props.onDismiss}>
