@@ -8,6 +8,8 @@ import { PizzaCrust } from '../../PizzaCrusts/types/pizza-crust';
 import PizzaAttributesSelectionSection from './pizza-attributes-selection';
 import { PizzaFlavour } from '../../PizzaFlavours/type/pizza-flavour';
 import Button from '@mui/material/Button';
+import { useQuery } from '@apollo/client';
+import { GET_PIZZA_CRUSTS } from '../../PizzaCrusts/graphql/get-crusts';
 
 function ModalSelectPizza(props: ModalPropsType) {
   const [selectedCrust, setSelectedCrust] = useState<PizzaCrust[]>();
@@ -27,29 +29,9 @@ function ModalSelectPizza(props: ModalPropsType) {
     p: 4,
   };
 
-  const mockPizzaCrusts: PizzaCrust[] = [
-    {
-      id: 1,
-      name: 'Normal',
-      price: 0,
-      size: 'regular',
-    },
-    {
-      id: 2,
-      name: 'Catupury',
-      price: 5.0,
-      size: 'regular',
-    },
-    {
-      id: 3,
-      name: 'Chedar',
-      price: 5.0,
-      size: 'regular',
-    },
-  ];
-
-  // TODO: logic to retrieve borders accordingly to the pizza size
-  // in the API query, we will have to provide the pizza size as parameter
+  const crusts: PizzaCrust[] = useQuery(GET_PIZZA_CRUSTS, {
+    variables: { size: props.data.pizzaToBeAdded.size },
+  }).data?.pizzaCrusts;
 
   const mockPizzaFlavours: PizzaFlavour[] = [
     {
@@ -132,7 +114,7 @@ function ModalSelectPizza(props: ModalPropsType) {
           description={`Please select ${MAX_NUMBER_OF_PIZZA_CRUST} crust`}
           numberOfSelectionAllowed={MAX_NUMBER_OF_PIZZA_CRUST}
           selectedOptions={selectedCrust}
-          options={mockPizzaCrusts}
+          options={crusts}
           onDelete={handleDeleteCrust}
           onSelection={handleSelectCrust}
         />
