@@ -23,17 +23,41 @@ function SelectedProducts(
         {/* body */}
         {props?.products &&
           props.products.map((product: SelectedProduct) => (
-            <div key={product.id} className="flex p-1 text-sm border-b-2">
-              <p className="w-1/6 text-center">{product?.amount}</p>
-              <p className="w-3/6">{product?.name}</p>
-              <p className="w-1/6 text-center">R$ {product?.price}</p>
-              <p className="w-1/6 text-center">
-                <DeleteIcon
-                  className="cursor-pointer"
-                  onClick={() => props.onAction(product)}
-                ></DeleteIcon>
-              </p>
-            </div>
+            <>
+              <div className="border-b-2 p-1">
+                <div key={product.id} className="flex text-sm">
+                  <p className="w-1/6 text-center">{product?.amount}</p>
+                  <p className="w-3/6">{product?.name}</p>
+                  <p className="w-1/6 text-center">R$ {product?.price}</p>
+                  <p className="w-1/6 text-center">
+                    <DeleteIcon
+                      className="cursor-pointer"
+                      onClick={() => props.onAction(product)}
+                    ></DeleteIcon>
+                  </p>
+                </div>
+                {/* info about pizza flavours and crust */}
+                {product?.pizzaFlavour1 ? (
+                  <div className="flex flex-col">
+                    <small className="ml-20">
+                      {product?.pizzaCrust[0]?.name} crust
+                    </small>
+                    <small className="ml-20">
+                      {product.pizzaFlavour1.name}
+                    </small>
+                    {product?.pizzaFlavour2 ? (
+                      <small className="ml-20">
+                        {product.pizzaFlavour2.name}
+                      </small>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                ) : (
+                  ''
+                )}
+              </div>
+            </>
           ))}
         {/* footer */}
         <div className="mt-20">
