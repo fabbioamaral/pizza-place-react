@@ -10,6 +10,7 @@ import { PizzaFlavour } from '../../PizzaFlavours/type/pizza-flavour';
 import Button from '@mui/material/Button';
 import { useQuery } from '@apollo/client';
 import { GET_PIZZA_CRUSTS } from '../../PizzaCrusts/graphql/get-crusts';
+import { GET_PIZZA_FLAVOURS } from '../../PizzaFlavours/graphql/get-crusts';
 
 function ModalSelectPizza(props: ModalPropsType) {
   const [selectedCrust, setSelectedCrust] = useState<PizzaCrust[]>();
@@ -33,23 +34,9 @@ function ModalSelectPizza(props: ModalPropsType) {
     variables: { size: props.data.pizzaToBeAdded.size },
   }).data?.pizzaCrusts;
 
-  const mockPizzaFlavours: PizzaFlavour[] = [
-    {
-      id: 1,
-      name: 'Calabresa',
-      size: 'regular',
-    },
-    {
-      id: 2,
-      name: 'Frango com Catupiry',
-      size: 'regular',
-    },
-    {
-      id: 3,
-      name: 'Quatro Queijos',
-      size: 'regular',
-    },
-  ];
+  const flavours: PizzaFlavour[] = useQuery(GET_PIZZA_FLAVOURS, {
+    variables: { size: props.data.pizzaToBeAdded.size },
+  }).data?.pizzaFlavours;
 
   const handleSelectCrust = (newCrust: PizzaCrust) => {
     const copySelectedCrust: PizzaCrust[] = selectedCrust
@@ -124,7 +111,7 @@ function ModalSelectPizza(props: ModalPropsType) {
           description={`Please select max of ${MAX_NUMBER_OF_PIZZA_FLAVOUR} flavours`}
           numberOfSelectionAllowed={MAX_NUMBER_OF_PIZZA_FLAVOUR}
           selectedOptions={selectedFlavour}
-          options={mockPizzaFlavours}
+          options={flavours}
           onDelete={handleDeleteFlavour}
           onSelection={handleSelectFlavour}
         />
