@@ -8,7 +8,7 @@ function PizzaAttributesSelectionSection(props: {
   description: string;
   numberOfSelectionAllowed: number;
   selectedOptions: PizzaCrust[] | PizzaFlavour[] | undefined;
-  options: PizzaCrust[];
+  options: PizzaCrust[] | PizzaFlavour[];
   onDelete: (optionId: number) => void;
   onSelection: (option: any) => void;
 }) {
@@ -31,15 +31,17 @@ function PizzaAttributesSelectionSection(props: {
             style={{ marginTop: 12 }}
           />
         ))
-      ) : (
+      ) : props.options && props.options.length ? (
         <p>{props.description}</p>
+      ) : (
+        ''
       )}
 
       <div
         className="flex flex-wrap mt-4 w-8/12"
         style={{ overflow: 'hidden' }}
       >
-        {props.options &&
+        {props.options && props.options.length ? (
           props.options.map((option: PizzaCrust | PizzaFlavour) => (
             <Chip
               key={option.id}
@@ -48,7 +50,10 @@ function PizzaAttributesSelectionSection(props: {
               variant="outlined"
               onClick={() => props.onSelection(option)}
             />
-          ))}
+          ))
+        ) : (
+          <p>No options registered. Please add at least one.</p>
+        )}
       </div>
     </>
   );
