@@ -10,7 +10,7 @@ import { PizzaFlavour } from '../../PizzaFlavours/type/pizza-flavour';
 import Button from '@mui/material/Button';
 import { useQuery } from '@apollo/client';
 import { GET_PIZZA_CRUSTS } from '../../PizzaCrusts/graphql/get-crusts';
-import { GET_PIZZA_FLAVOURS } from '../../PizzaFlavours/graphql/get-crusts';
+import { GET_PIZZA_FLAVOURS } from '../../PizzaFlavours/graphql/get-flavours';
 
 function ModalSelectPizza(props: ModalPropsType) {
   const [selectedCrust, setSelectedCrust] = useState<PizzaCrust[]>();
