@@ -40,7 +40,9 @@ function SelectedProducts(
                 {product?.pizzaFlavour1 ? (
                   <div className="flex flex-col">
                     <small className="ml-20">
-                      {product?.pizzaCrust[0]?.name} crust
+                      {product?.pizzaCrust
+                        ? `${product?.pizzaCrust[0].name} crust`
+                        : ''}
                     </small>
                     <small className="ml-20">
                       {product.pizzaFlavour1.name}
