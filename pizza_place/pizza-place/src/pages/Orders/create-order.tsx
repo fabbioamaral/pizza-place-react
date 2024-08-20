@@ -15,6 +15,7 @@ import { useLocation } from 'react-router-dom';
 import ModalSelectPizza from './components/modal-select-pizza-flavour';
 import { PizzaFlavour } from '../PizzaFlavours/type/pizza-flavour';
 import { PizzaCrust } from '../PizzaCrusts/types/pizza-crust';
+import { Button } from '@mui/material';
 
 function CreateOrder() {
   const [isSelectPizzaFlavourModalOpen, setIsSelectPizzaFlavourModalOpen] =
@@ -24,7 +25,6 @@ function CreateOrder() {
   const [selectedProductsProps, setSelectedProductsProps] =
     useState<SelectedProductsProps>({
       products: [],
-      operatorName: 'Clebao',
       sumPrice: 0,
     });
 
@@ -144,6 +144,23 @@ function CreateOrder() {
             sumPrice={selectedProductsProps.sumPrice}
             onAction={deleteProduct}
           ></SelectedProducts>
+          <div className="flex mb-1 pt-2 pl-2">
+            <p className="font-bold">Operator:</p>
+            <p className="ml-1">{'Joao da Silva'}</p>
+          </div>
+          <div className="flex flex-col flex-wrap py-4 px-1">
+            <Button
+              variant="contained"
+              sx={{ mb: 1 }}
+              type="submit"
+              color="success"
+            >
+              Payment & Delivery
+            </Button>
+            <Button variant="contained" type="submit" color="error">
+              Cancel
+            </Button>
+          </div>
         </div>
 
         {/* search bar, categories, products */}

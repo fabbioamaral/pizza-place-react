@@ -63,26 +63,9 @@ function SelectedProducts(
           ))}
         {/* footer */}
         <div className="mt-20">
-          <div className="flex mb-1 pt-2 pl-2">
-            <p className="font-bold">Operator:</p>
-            <p className="ml-1">{'Joao da Silva'}</p>
-          </div>
           <div className="flex mb-1 pl-2">
             <p className="font-bold">Total:</p>
             <p className="ml-1">R${props?.sumPrice}</p>
-          </div>
-          <div className="flex flex-col flex-wrap py-4 px-1">
-            <Button
-              variant="contained"
-              sx={{ mb: 1 }}
-              type="submit"
-              color="success"
-            >
-              Payment & Delivery
-            </Button>
-            <Button variant="contained" type="submit" color="error">
-              Cancel
-            </Button>
           </div>
         </div>
       </div>
