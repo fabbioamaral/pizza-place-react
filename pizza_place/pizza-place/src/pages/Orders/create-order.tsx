@@ -118,8 +118,8 @@ function CreateOrder() {
   ) => {
     const pizzaToBeAdded = {
       ...pizza,
-      pizzaFlavour1: flavours[0],
-      pizzaFlavour2: flavours[1],
+      pizzaFlavour1: flavours ? flavours[0] : undefined,
+      pizzaFlavour2: flavours ? flavours[1] : undefined,
       pizzaCrust: crust,
       amount: 1,
     };
