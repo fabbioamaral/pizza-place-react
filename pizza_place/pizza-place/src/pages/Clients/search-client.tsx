@@ -13,10 +13,12 @@ import ClientDetails from './components/client-details';
 import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
 import { useNavigate } from 'react-router-dom';
 import { Client } from './types/client';
+import { Address } from '../Addresses/types/address';
 
 function SearchClient() {
   const [clientNumber, setClientNumber] = useState('');
   const [client, setClient] = useState<Client>();
+  const [address, setAddress] = useState<Address>();
   const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
   const navigate = useNavigate();
 
@@ -67,6 +69,7 @@ function SearchClient() {
     navigate('/create-order', {
       state: {
         client,
+        address,
       },
     });
   };
@@ -95,7 +98,11 @@ function SearchClient() {
       </div>
       {client ? (
         <>
-          <ClientDetails client={client} setClient={setClient} />
+          <ClientDetails
+            client={client}
+            setClient={setClient}
+            setAddress={setAddress}
+          />
           <div className="flex justify-center mt-10">
             <Button
               variant="contained"

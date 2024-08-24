@@ -12,9 +12,11 @@ import { useQuery } from '@apollo/client';
 function ClientDetails({
   client,
   setClient,
+  setAddress,
 }: {
   client: Client;
   setClient: React.Dispatch<React.SetStateAction<Client | undefined>>;
+  setAddress: React.Dispatch<React.SetStateAction<Address | undefined>>;
 }) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
   const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
@@ -49,6 +51,7 @@ function ClientDetails({
     addressesCopy[indexNewlySelectedAddress].selected = true;
     setAddresses(addressesCopy);
     setClient({ ...client, addresses: addressesCopy });
+    setAddress(addressesCopy.find((address) => address.id === addressId));
   };
 
   return (

@@ -11,18 +11,21 @@ function SummaryOrder(props: SummaryOrderTyoe) {
         </div>
         <div className="flex justify-between my-5 w-60">
           <p className="font-bold">Total Products</p>
-          <p>{props.totalProducts}</p>
+          <p>${props.totalProducts}</p>
         </div>
         <div className="flex justify-between my-5 w-60">
           <p className="font-bold">Delivery Fee</p>
-          <p>{props.deliveryFee}</p>
+          <p>${props.deliveryFee}</p>
         </div>
         <div className="flex justify-between my-5 w-60">
           <p className="font-bold">TOTAL</p>
-          <p>{props.total}</p>
+          <p>${props.total}</p>
         </div>
         <h2 className="font-bold text-xl">Address</h2>
-        <p className="my-2">{props.address}</p>
+        <p className="my-2">
+          {props.address?.street}, {props.address?.number},
+          {props.address?.suburb_id}, {props.address?.city}
+        </p>
       </div>
     </>
   );

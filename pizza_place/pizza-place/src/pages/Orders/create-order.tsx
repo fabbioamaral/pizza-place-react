@@ -16,6 +16,7 @@ import ModalSelectPizza from './components/modal-select-pizza-flavour';
 import { PizzaFlavour } from '../PizzaFlavours/type/pizza-flavour';
 import { PizzaCrust } from '../PizzaCrusts/types/pizza-crust';
 import { Button } from '@mui/material';
+import PaymentOrder from './components/payment-order';
 
 function CreateOrder() {
   const [isSelectPizzaFlavourModalOpen, setIsSelectPizzaFlavourModalOpen] =
@@ -28,8 +29,14 @@ function CreateOrder() {
       sumPrice: 0,
     });
 
+  const [
+    shouldDisplayPaymentOrderSection,
+    setShouldDisplayPaymentOrderSection,
+  ] = useState(false);
+
   const location = useLocation();
   const client = location.state.client;
+  const address = location.state.address;
 
   const categories: Category[] = useQuery(GET_CATEGORIES)?.data?.categories;
   const products = useQuery(GET_PRODUCTS)?.data?.products;
@@ -132,6 +139,12 @@ function CreateOrder() {
     setSelectedProductsProps(selectedProductPropsList);
   };
 
+  const goToPaymentSection = () => {
+    if (selectedProductsProps?.sumPrice === 0) return;
+
+    setShouldDisplayPaymentOrderSection(true);
+  };
+
   return (
     <>
       <Header></Header>
@@ -154,6 +167,7 @@ function CreateOrder() {
               sx={{ mb: 1 }}
               type="submit"
               color="success"
+              onClick={goToPaymentSection}
             >
               Payment & Delivery
             </Button>
@@ -163,44 +177,55 @@ function CreateOrder() {
           </div>
         </div>
 
-        {/* search bar, categories, products */}
         <div className="w-8/12 pr-4">
-          {/* search bar */}
-          <div>
-            <SearchBar></SearchBar>
-          </div>
-          {/* categories */}
-          <div className="mt-6 ml-2">
-            <Slider
-              slides={categories}
-              numberOfSlidesPerView={4}
-              onAction={setProductToDisplay}
-            ></Slider>
-          </div>
+          {shouldDisplayPaymentOrderSection ? (
+            <PaymentOrder
+              address={address}
+              numberOfProduct={selectedProductsProps?.products?.length}
+              totalProducts={selectedProductsProps?.sumPrice}
+              deliveryFee={0}
+              total={selectedProductsProps?.sumPrice + 0}
+            />
+          ) : (
+            /* search bar, categories, products */
+            <div>
+              {/* search bar */}
+              <div>
+                <SearchBar></SearchBar>
+              </div>
+              {/* categories */}
+              <div className="mt-6 ml-2">
+                <Slider
+                  slides={categories}
+                  numberOfSlidesPerView={4}
+                  onAction={setProductToDisplay}
+                ></Slider>
+              </div>
 
-          {/* products */}
-          <div className="flex flex-wrap justify-center mt-5 mx-10">
-            {productsToShow && productsToShow.length ? (
-              productsToShow?.map((product: Product) => (
-                <div key={product.id}>
-                  <ProductCard
-                    id={product.id}
-                    key={product.id}
-                    name={product.name}
-                    price={product.price}
-                    categoryId={product.categoryId}
-                    size={product.size}
-                    onAction={addProduct}
-                  ></ProductCard>
-                </div>
-              ))
-            ) : (
-              <p className="mt-10 font-bold">No products to display.</p>
-            )}
-          </div>
+              {/* products */}
+              <div className="flex flex-wrap justify-center mt-5 mx-10">
+                {productsToShow && productsToShow.length ? (
+                  productsToShow?.map((product: Product) => (
+                    <div key={product.id}>
+                      <ProductCard
+                        id={product.id}
+                        key={product.id}
+                        name={product.name}
+                        price={product.price}
+                        categoryId={product.categoryId}
+                        size={product.size}
+                        onAction={addProduct}
+                      ></ProductCard>
+                    </div>
+                  ))
+                ) : (
+                  <p className="mt-10 font-bold">No products to display.</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
       {isSelectPizzaFlavourModalOpen && (
         <ModalSelectPizza
           isOpen={isSelectPizzaFlavourModalOpen}
