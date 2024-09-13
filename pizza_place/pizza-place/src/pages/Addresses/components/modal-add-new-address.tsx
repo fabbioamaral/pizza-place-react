@@ -15,6 +15,7 @@ import {
 import { FieldValues, useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/react-hooks';
 import { CREATE_ADDRESS } from '../graphql/create-address';
+import AddressForm from './address-form';
 
 function ModalAddAddress(props: ModalPropsType) {
   const {
@@ -70,17 +71,8 @@ function ModalAddAddress(props: ModalPropsType) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={styleModal}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Add New Address
-        </Typography>
-
         <div>
-          <p className="font-bold mt-4">{props.data.client.name}</p>
-          <p className="font-bold">{props.data.client.phone}</p>
-        </div>
-
-        <div>
-          <form onSubmit={handleSubmit(onFormSubmit)}>
+          {/* <form onSubmit={handleSubmit(onFormSubmit)}>
             <FormControl className="w-full">
               <div className="flex justify-start">
                 <div className="flex flex-col w-7/12 mr-2">
@@ -169,7 +161,15 @@ function ModalAddAddress(props: ModalPropsType) {
                 Dismiss
               </Button>
             </div>
-          </form>
+          </form> */}
+          <AddressForm
+            shouldShowSetAddress={true}
+            shouldShowHeader={true}
+            shouldShowClientInfo={true}
+            shouldShowSaveAddressButton={true}
+            clientName={props.data.client.name}
+            clientPhone={props.data.client.phone}
+          />
         </div>
       </Box>
     </Modal>
