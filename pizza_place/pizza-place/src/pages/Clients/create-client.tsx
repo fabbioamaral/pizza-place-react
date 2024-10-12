@@ -1,19 +1,37 @@
-import { FormControl, FormLabel, TextField, Typography } from '@mui/material';
+import {
+  FormControl,
+  FormLabel,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
 import Header from '../../shared/components/header';
 import { useForm } from 'react-hook-form';
 import AddressForm from '../Addresses/components/address-form';
 import { Address } from '../Addresses/types/address';
 import { useMutation } from '@apollo/client';
 import { CREATE_CLIENT } from './graphql/create-client';
+import React, { useState } from 'react';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
+import { useNavigate } from 'react-router-dom';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function CreateClient() {
   const { register, getValues } = useForm();
-
+  const navigate = useNavigate();
   const [createClient] = useMutation(CREATE_CLIENT);
+  const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
 
   const addClient = async (address: Address): Promise<void> => {
     try {
-      const result = await createClient({
+      await createClient({
         variables: {
           name: getValues('name'),
           phone: getValues('phone'),
@@ -26,23 +44,31 @@ function CreateClient() {
           default: true,
         },
       });
+
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Client has been added successfully!',
+        typeOfSnack: 'success',
+      });
+
+      setTimeout(() => navigate('/list-clients'), 1000);
     } catch (error) {
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Error trying to add client',
+        typeOfSnack: 'error',
+      });
       console.error('[CreateClient] Error adding a new client');
     }
   };
 
-  const getValuesFromPersonalDataForm = (): {
-    name: string;
-    phone: string | number;
-    notes: string;
-  } => {
-    return {
-      name: getValues('name'),
-      phone: getValues('phone'),
-      notes: getValues('notes'),
-    };
+  const handleCloseSnack = () => {
+    setSnackContent({
+      shouldDisplay: false,
+      message: '',
+      typeOfSnack: undefined,
+    });
   };
-
   return (
     <>
       <Header></Header>
@@ -99,7 +125,7 @@ function CreateClient() {
         <div className="w-4/12">
           <AddressForm onFormSubmit={addClient} />
         </div>
-        {/* 
+
         <Snackbar
           open={snackContent.shouldDisplay}
           autoHideDuration={3000}
@@ -112,7 +138,7 @@ function CreateClient() {
           >
             {snackContent.message}
           </Alert>
-        </Snackbar> */}
+        </Snackbar>
       </div>
     </>
   );
