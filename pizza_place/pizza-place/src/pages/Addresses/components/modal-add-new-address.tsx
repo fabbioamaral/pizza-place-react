@@ -16,6 +16,7 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/react-hooks';
 import { CREATE_ADDRESS } from '../graphql/create-address';
 import AddressForm from './address-form';
+import { Address } from '../types/address';
 
 function ModalAddAddress(props: ModalPropsType) {
   const {
@@ -37,20 +38,20 @@ function ModalAddAddress(props: ModalPropsType) {
     p: 4,
   };
 
-  const onFormSubmit = async (data: FieldValues) => {
+  const addAddress = async (address: Address) => {
     if (!isValid) return;
     if (!props?.data?.client?.id) return;
 
     try {
       await createAddress({
         variables: {
-          street: data.street,
-          number: data.number,
+          street: address.street,
+          number: address.number,
           suburbId: 1, // this field must be a menu dropdown
           clientId: props.data.client.id,
-          city: data.city,
-          additionalInfo: data.additionalInfo,
-          isDefault: data.default === 'true' ? true : false, // workaround since the radio group is return the value as string
+          city: address.city,
+          additionalInfo: address.additionalInfo,
+          isDefault: address.default,
         },
       });
 
@@ -72,103 +73,19 @@ function ModalAddAddress(props: ModalPropsType) {
     >
       <Box sx={styleModal}>
         <div>
-          {/* <form onSubmit={handleSubmit(onFormSubmit)}>
-            <FormControl className="w-full">
-              <div className="flex justify-start">
-                <div className="flex flex-col w-7/12 mr-2">
-                  <FormLabel sx={{ mb: 1, mt: 2 }}>Street</FormLabel>
-                  <TextField
-                    variant="outlined"
-                    required
-                    sx={{ mb: 2 }}
-                    {...register('street')}
-                  ></TextField>
-                </div>
-
-                <div className="flex flex-col w-2/12">
-                  <FormLabel sx={{ mb: 1, mt: 2 }}>Number</FormLabel>
-                  <TextField
-                    variant="outlined"
-                    required
-                    sx={{ mb: 2 }}
-                    {...register('number')}
-                  ></TextField>
-                </div>
-
-                <div className="flex flex-col w-3/12 ml-2">
-                  <FormLabel sx={{ mb: 1, mt: 2 }}>Additional Info</FormLabel>
-                  <TextField
-                    variant="outlined"
-                    required
-                    sx={{ mb: 2 }}
-                    {...register('additionalInfo')}
-                  ></TextField>
-                </div>
-              </div>
-
-              <div className="flex justify-start">
-                <div className="flex flex-col w-6/12 mr-2">
-                  <FormLabel sx={{ mb: 1, mt: 2 }}>Suburb</FormLabel>
-                  <TextField
-                    variant="outlined"
-                    required
-                    sx={{ mb: 2 }}
-                    {...register('suburb')}
-                  ></TextField>
-                </div>
-
-                <div className="flex flex-col w-6/12">
-                  <FormLabel sx={{ mb: 1, mt: 2 }}>City</FormLabel>
-                  <TextField
-                    variant="outlined"
-                    required
-                    sx={{ mb: 2 }}
-                    {...register('city')}
-                  ></TextField>
-                </div>
-              </div>
-              <div>
-                <FormLabel id="demo-radio-buttons-group-label">
-                  Set this address as default?
-                </FormLabel>
-                <RadioGroup
-                  {...register('default')}
-                  aria-labelledby="demo-radio-buttons-group-label"
-                  name="radio-buttons-group"
-                  row
-                  defaultValue={true}
-                >
-                  <FormControlLabel
-                    value={true}
-                    control={<Radio />}
-                    label="Yes"
-                    {...register('default')}
-                  />
-                  <FormControlLabel
-                    value={false}
-                    control={<Radio />}
-                    label="No"
-                    {...register('default')}
-                  />
-                </RadioGroup>
-              </div>
-            </FormControl>
-            <div className="mt-4">
-              <Button sx={{ mr: 2 }} variant="outlined" type="submit">
-                Save New Address
-              </Button>
-              <Button variant="outlined" onClick={props.onDismiss}>
-                Dismiss
-              </Button>
-            </div>
-          </form> */}
           <AddressForm
-            shouldShowSetAddress={true}
-            shouldShowHeader={true}
-            shouldShowClientInfo={true}
-            shouldShowSaveAddressButton={true}
-            clientName={props.data.client.name}
-            clientPhone={props.data.client.phone}
+            displayControlProperties={{
+              shouldShowSetAddress: true,
+              shouldShowHeader: true,
+              shouldShowClientInfo: true,
+              shouldShowSaveAddressButton: false,
+            }}
+            clientProperties={{
+              name: props.data.client.name,
+              phone: props.data.client.phone,
+              id: props.data.client.id,
+            }}
+            onFormSubmit={addAddress}
           />
         </div>
       </Box>

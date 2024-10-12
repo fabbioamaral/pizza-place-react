@@ -10,55 +10,78 @@ import {
 } from '@mui/material';
 
 import { FieldValues, useForm } from 'react-hook-form';
+import { Address } from '../types/address';
 
 function AddressForm({
-  shouldShowSetAddress,
-  shouldShowHeader,
-  shouldShowClientInfo,
-  shouldShowSaveAddressButton,
-  clientName,
-  clientPhone,
-  onSubmitForm,
+  displayControlProperties,
+  clientProperties,
+  onFormSubmit,
 }: {
-  shouldShowSetAddress?: boolean;
-  shouldShowHeader?: boolean;
-  shouldShowClientInfo?: boolean;
-  shouldShowSaveAddressButton?: boolean;
-  clientName?: string;
-  clientPhone?: string;
-  onSubmitForm?: () => {};
+  displayControlProperties?: {
+    shouldShowSetAddress: boolean;
+    shouldShowHeader: boolean;
+    shouldShowClientInfo: boolean;
+    shouldShowSaveAddressButton: boolean;
+  };
+  clientProperties?: {
+    id: number | string;
+    name: string;
+    phone: string | number;
+    notes?: string;
+    address?: Address;
+  };
+  onFormSubmit?: any;
 }) {
   const {
     register,
     handleSubmit,
     formState: { isValid },
+    getValues,
   } = useForm();
 
-  //   const onFormSubmit = async (data: FieldValues) => {
-  //     if (!isValid) return;
-  //     //if (!props?.data?.client?.id) return;
-  //   };
+  const onButtonSubmit = async (data: FieldValues) => {
+    // checks validity of address data
+    if (!isValid) return;
+
+    let parameterRequest: Object = {
+      street: getValues('street'),
+      number: getValues('number'),
+      suburb_id: 1,
+      city: getValues('city'),
+      additionalInfo: getValues('additionalInfo'),
+    };
+
+    if (clientProperties?.id) {
+      parameterRequest = {
+        ...parameterRequest,
+        default: getValues('default') === 'true' ? true : false,
+        clientId: clientProperties.id,
+      };
+    }
+
+    onFormSubmit(parameterRequest);
+  };
 
   return (
     <>
-      {shouldShowHeader ? (
+      {displayControlProperties?.shouldShowHeader ? (
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Add New Address
         </Typography>
       ) : (
         ''
       )}
-      {shouldShowClientInfo ? (
+      {displayControlProperties?.shouldShowClientInfo ? (
         <div>
-          <p className="font-bold mt-4">{clientName}</p>
-          <p className="font-bold">{clientPhone}</p>
+          <p className="font-bold mt-4">{clientProperties?.name}</p>
+          <p className="font-bold">{clientProperties?.phone}</p>
         </div>
       ) : (
         ''
       )}
 
       <div>
-        <form onSubmit={() => console.log('hello')}>
+        <form onSubmit={handleSubmit(onButtonSubmit)}>
           <FormControl className="w-full">
             <div className="flex justify-start">
               <div className="flex flex-col w-7/12 mr-2">
@@ -85,7 +108,6 @@ function AddressForm({
                 <FormLabel sx={{ mb: 1, mt: 2 }}>Additional Info</FormLabel>
                 <TextField
                   variant="outlined"
-                  required
                   sx={{ mb: 2 }}
                   {...register('additionalInfo')}
                 ></TextField>
@@ -113,7 +135,7 @@ function AddressForm({
                 ></TextField>
               </div>
             </div>
-            {shouldShowSetAddress ? (
+            {displayControlProperties?.shouldShowSetAddress ? (
               <div>
                 <FormLabel id="demo-radio-buttons-group-label">
                   Set this address as default?
@@ -143,15 +165,12 @@ function AddressForm({
               ''
             )}
           </FormControl>
-          {shouldShowSaveAddressButton ? (
-            <div className="mt-4">
-              <Button sx={{ mr: 2 }} variant="outlined" type="submit">
-                Save New Address
-              </Button>
-            </div>
-          ) : (
-            ''
-          )}
+
+          <div className="mt-4">
+            <Button sx={{ mr: 2 }} variant="contained" type="submit">
+              Submit
+            </Button>
+          </div>
         </form>
       </div>
     </>
