@@ -114,12 +114,6 @@ function CreateClient() {
               ></TextField>
             </div>
           </FormControl>
-
-          {/* <div className="mt-4">
-            <Button variant="contained" type="submit">
-              Submit
-            </Button>
-          </div> */}
         </form>
         <h2>Address</h2>
         <div className="w-4/12">
