@@ -14,10 +14,12 @@ function TableComponent({
   headerTitles,
   data,
   ariaLabel,
+  onClickDelete,
 }: {
   headerTitles: string[];
   data: Object[];
   ariaLabel: string;
+  onClickDelete: (id: string) => void;
 }) {
   return (
     <>
@@ -48,7 +50,10 @@ function TableComponent({
                     );
                   })}
                   <TableCell align="left">
-                    <DeleteIcon className="mr-4 cursor-pointer"></DeleteIcon>
+                    <DeleteIcon
+                      className="mr-4 cursor-pointer"
+                      onClick={() => onClickDelete(dataRow.id)}
+                    ></DeleteIcon>
                     <EditIcon className="cursor-pointer"></EditIcon>
                   </TableCell>
                 </TableRow>
@@ -56,25 +61,6 @@ function TableComponent({
             </TableBody>
           </Table>
         </TableContainer>
-        {/* {deleteModalData.isOpen && (
-          <ModalDelete
-            title="Delete Product"
-            description="Are you sure you want to delete this prodct?"
-            isOpen={deleteModalData.isOpen}
-            onClose={() => handleCloseModal(true)}
-            onAction={onDeleteCategory}
-            onDismiss={() => handleCloseModal(true)}
-          ></ModalDelete>
-        )}
-        {updateModalData.isOpen && (
-          <ModalUpdateProduct
-            isOpen={updateModalData.isOpen}
-            onClose={() => handleCloseModal(false)}
-            onAction={onUpdateProduct}
-            onDismiss={() => handleCloseModal(false)}
-            data={{ product: updateModalData.product, categories }}
-          ></ModalUpdateProduct>
-        )} */}
       </div>
     </>
   );
