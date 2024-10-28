@@ -15,11 +15,13 @@ function TableComponent({
   data,
   ariaLabel,
   onClickDelete,
+  onClickUpdate,
 }: {
   headerTitles: string[];
   data: Object[];
   ariaLabel: string;
   onClickDelete: (id: string) => void;
+  onClickUpdate: (id: string) => void;
 }) {
   return (
     <>
@@ -54,7 +56,10 @@ function TableComponent({
                       className="mr-4 cursor-pointer"
                       onClick={() => onClickDelete(dataRow.id)}
                     ></DeleteIcon>
-                    <EditIcon className="cursor-pointer"></EditIcon>
+                    <EditIcon
+                      className="cursor-pointer"
+                      onClick={() => onClickUpdate(dataRow.id)}
+                    ></EditIcon>
                   </TableCell>
                 </TableRow>
               ))}

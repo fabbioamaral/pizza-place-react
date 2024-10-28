@@ -1,6 +1,6 @@
 import { AddCircle } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import AddressCard from '../../Addresses/components/AddressCard';
+import AddressCard from '../../Addresses/components/address-card';
 import ClientInfo from './client-info';
 import { Client } from '../types/client';
 import { Address } from '../../Addresses/types/address';

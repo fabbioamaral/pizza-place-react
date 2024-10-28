@@ -5,7 +5,7 @@ import Header from '../../shared/components/header';
 import ModalDelete from '../../shared/components/ModalDelete';
 import React, { useEffect, useState } from 'react';
 import { DELETE_CLIENT } from './graphql/delete-client';
-import { ClientTableInfo } from './types/client-table-info';
+import ModalUpdateClient from './components/modal-update-client';
 
 function ListClients() {
   const { data, refetch } = useQuery(GET_CLIENTS);
@@ -29,7 +29,15 @@ function ListClients() {
     refetch();
   }, [refetch]);
 
-  //const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [clientToBeUpdated, setClientToBeUpdated] = useState();
+  const onClickUpdate = (clientId: string) => {
+    setIsUpdateModalOpen(true);
+    const clientToBeUpdated = data?.clients?.find(
+      (client: any) => client.id === clientId
+    );
+    setClientToBeUpdated(clientToBeUpdated);
+  };
 
   return (
     <>
@@ -45,6 +53,7 @@ function ListClients() {
           };
         })}
         onClickDelete={onClickDelete}
+        onClickUpdate={onClickUpdate}
       />
       {isDeleteModalOpen && (
         <ModalDelete
@@ -56,15 +65,15 @@ function ListClients() {
           onAction={deleteClient}
         ></ModalDelete>
       )}
-      {/* {updateModalData.isOpen && (
+      {isUpdateModalOpen && (
         <ModalUpdateClient
-          isOpen={updateModalData.isOpen}
-          onClose={() => handleCloseModal(false)}
-          onAction={onUpdateProduct}
-          onDismiss={() => handleCloseModal(false)}
-          data={{ product: updateModalData.product, categories }}
+          data={clientToBeUpdated}
+          isOpen={isUpdateModalOpen}
+          onClose={() => setIsUpdateModalOpen(false)}
+          onDismiss={() => setIsUpdateModalOpen(false)}
+          onAction={() => {}}
         ></ModalUpdateClient>
-      )} */}
+      )}
     </>
   );
 }

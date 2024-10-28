@@ -5,7 +5,7 @@ export default function AddressCard({
   selected,
 }: {
   addressSummaryText: string;
-  selected: boolean;
+  selected?: boolean;
 }) {
   return (
     <>

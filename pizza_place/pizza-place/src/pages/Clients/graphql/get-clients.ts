@@ -6,6 +6,13 @@ export const GET_CLIENTS = gql`
       id
       name
       phone
+      addresses {
+        street
+        number
+        city
+        additionalInfo
+        default
+      }
     }
   }
 `;
