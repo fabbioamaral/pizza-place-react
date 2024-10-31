@@ -6,9 +6,13 @@ import ModalDelete from '../../shared/components/ModalDelete';
 import React, { useEffect, useState } from 'react';
 import { DELETE_CLIENT } from './graphql/delete-client';
 import ModalUpdateClient from './components/modal-update-client';
+import { Client } from './types/client';
+import { UPDATE_CLIENT } from './graphql/update-client';
+import { useForm } from 'react-hook-form';
 
 function ListClients() {
   const { data, refetch } = useQuery(GET_CLIENTS);
+  const { register, getValues, setValue, reset } = useForm();
 
   const [deleteCategory] = useMutation(DELETE_CLIENT);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -30,13 +34,32 @@ function ListClients() {
   }, [refetch]);
 
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [clientToBeUpdated, setClientToBeUpdated] = useState();
-  const onClickUpdate = (clientId: string) => {
-    setIsUpdateModalOpen(true);
+  const [clientToBeUpdated, setClientToBeUpdated] = useState<Client>();
+  const onClickUpdate = (clientId: string | number) => {
     const clientToBeUpdated = data?.clients?.find(
-      (client: any) => client.id === clientId
+      (client: Client) => client.id === clientId
     );
     setClientToBeUpdated(clientToBeUpdated);
+    setIsUpdateModalOpen(true);
+  };
+
+  const [updateClient] = useMutation(UPDATE_CLIENT);
+
+  const onUpdateClient = async (name: string, phone: string, notes: string) => {
+    try {
+      const clientUpdated = {
+        id: clientToBeUpdated!.id,
+        name: name || clientToBeUpdated!.name,
+        phone: phone || clientToBeUpdated!.phone,
+        notes: notes || clientToBeUpdated!.notes,
+      };
+      await updateClient({
+        variables: clientUpdated,
+      });
+      await refetch();
+
+      setIsUpdateModalOpen(false);
+    } catch (error) {}
   };
 
   return (
@@ -67,11 +90,16 @@ function ListClients() {
       )}
       {isUpdateModalOpen && (
         <ModalUpdateClient
-          data={clientToBeUpdated}
+          data={{
+            client: clientToBeUpdated,
+            register,
+            getValues,
+            reset,
+          }}
           isOpen={isUpdateModalOpen}
           onClose={() => setIsUpdateModalOpen(false)}
           onDismiss={() => setIsUpdateModalOpen(false)}
-          onAction={() => {}}
+          onAction={onUpdateClient}
         ></ModalUpdateClient>
       )}
     </>

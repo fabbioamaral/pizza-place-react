@@ -1,14 +1,22 @@
-import { Button, FormControl, FormLabel, TextField } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { FormControl, FormLabel, TextField } from '@mui/material';
+import { FieldValues, UseFormRegister, UseFormReset } from 'react-hook-form';
 import { Client } from '../types/client';
+import { useEffect } from 'react';
 
-function ClientForm({ client }: { client?: Client }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { isValid },
-    getValues,
-  } = useForm();
+function ClientForm({
+  client,
+  register,
+  reset,
+}: {
+  client?: Client;
+  register: UseFormRegister<FieldValues>;
+  reset: UseFormReset<FieldValues>;
+}) {
+  useEffect(() => {
+    if (client) {
+      reset({ name: client.name, phone: client.phone, notes: client.notes });
+    }
+  }, [client]);
 
   return (
     <>
@@ -21,7 +29,6 @@ function ClientForm({ client }: { client?: Client }) {
                 variant="outlined"
                 required
                 sx={{ mb: 2 }}
-                defaultValue={client?.name}
                 {...register('name')}
               ></TextField>
             </div>
@@ -34,7 +41,6 @@ function ClientForm({ client }: { client?: Client }) {
                 sx={{ mb: 2 }}
                 type="tel"
                 {...register('phone')}
-                defaultValue={client?.phone}
               ></TextField>
             </div>
           </div>
@@ -43,10 +49,9 @@ function ClientForm({ client }: { client?: Client }) {
             <TextField
               variant="outlined"
               sx={{ mb: 2 }}
-              {...register('notes')}
               multiline
               minRows={3}
-              defaultValue={client?.notes}
+              {...register('notes')}
             ></TextField>
           </div>
         </FormControl>
