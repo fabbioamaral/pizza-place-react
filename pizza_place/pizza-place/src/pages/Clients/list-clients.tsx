@@ -9,6 +9,8 @@ import ModalUpdateClient from './components/modal-update-client';
 import { Client } from './types/client';
 import { UPDATE_CLIENT } from './graphql/update-client';
 import { useForm } from 'react-hook-form';
+import { SNACK_INITIAL_CONTENT } from '../../shared/constants/snack-initial-content';
+import { Alert, Snackbar } from '@mui/material';
 
 function ListClients() {
   const { data, refetch } = useQuery(GET_CLIENTS);
@@ -56,10 +58,33 @@ function ListClients() {
       await updateClient({
         variables: clientUpdated,
       });
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Client has been updated successfully!',
+        typeOfSnack: 'success',
+      });
+
       await refetch();
 
       setIsUpdateModalOpen(false);
-    } catch (error) {}
+    } catch (error) {
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Error trying to update client',
+        typeOfSnack: 'error',
+      });
+      console.error(error);
+    }
+  };
+
+  const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
+
+  const handleCloseSnack = () => {
+    setSnackContent({
+      shouldDisplay: false,
+      message: '',
+      typeOfSnack: undefined,
+    });
   };
 
   return (
@@ -102,6 +127,19 @@ function ListClients() {
           onAction={onUpdateClient}
         ></ModalUpdateClient>
       )}
+      <Snackbar
+        open={snackContent.shouldDisplay}
+        autoHideDuration={3000}
+        onClose={handleCloseSnack}
+      >
+        <Alert
+          onClose={handleCloseSnack}
+          severity={snackContent.typeOfSnack}
+          sx={{ width: '100%' }}
+        >
+          {snackContent.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
