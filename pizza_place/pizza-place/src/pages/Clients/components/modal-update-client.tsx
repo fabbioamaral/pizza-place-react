@@ -3,8 +3,22 @@ import ClientForm from './client-form';
 import AddressCard from '../../Addresses/components/address-card';
 import { Box, Button, Modal, Typography } from '@mui/material';
 import { Address } from '../../Addresses/types/address';
+import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
+import { AddCircle } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
 
 function ModalUpdateClient(props: ModalPropsType) {
+  const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
+  const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
+    variables: { clientId: props.data.client.id },
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const STYLE_MODAL = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -40,8 +54,8 @@ function ModalUpdateClient(props: ModalPropsType) {
           >
             Addresses
           </h3>
-          {props.data?.addresses?.length > 0 ? (
-            props.data.addresses.map((address: Address) => (
+          {data?.addresses?.length > 0 ? (
+            data.addresses.map((address: Address) => (
               <AddressCard
                 key={address.id}
                 addressSummaryText={`${address.street}, ${address.number},${address.suburb_id}, ${address.city} `}
@@ -51,6 +65,16 @@ function ModalUpdateClient(props: ModalPropsType) {
           ) : (
             <p>No address registered.</p>
           )}
+          <Button
+            variant="contained"
+            sx={{ mt: 1 }}
+            type="submit"
+            size="small"
+            startIcon={<AddCircle />}
+            onClick={() => setIsAddAddressModalOpen(true)}
+          >
+            Add New Address
+          </Button>
           <div className="mt-6">
             <Button
               sx={{ mr: 2 }}
@@ -71,6 +95,15 @@ function ModalUpdateClient(props: ModalPropsType) {
           </div>
         </Box>
       </Modal>
+      {isAddAddressModalOpen && (
+        <ModalAddAddress
+          isOpen={isAddAddressModalOpen}
+          onClose={() => setIsAddAddressModalOpen(false)}
+          onAction={refetch}
+          onDismiss={() => setIsAddAddressModalOpen(false)}
+          data={{ client: props.data.client }}
+        ></ModalAddAddress>
+      )}
     </>
   );
 }
