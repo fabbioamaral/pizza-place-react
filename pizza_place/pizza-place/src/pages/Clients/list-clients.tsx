@@ -23,8 +23,20 @@ function ListClients() {
     try {
       await deleteCategory({ variables: { id: clientIdToBeDeleted } });
       await refetch();
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Client has been deleted successfully!',
+        typeOfSnack: 'success',
+      });
       setIsDeleteModalOpen(false);
-    } catch (error) {}
+    } catch (error) {
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Error trying to delete client',
+        typeOfSnack: 'error',
+      });
+      console.error(error);
+    }
   };
   const onClickDelete = (clientId: string) => {
     setIsDeleteModalOpen(true);
