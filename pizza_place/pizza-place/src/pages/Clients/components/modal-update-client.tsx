@@ -1,7 +1,7 @@
 import { ModalPropsType } from '../../../shared/types/modal';
 import ClientForm from './client-form';
 import AddressCard from '../../Addresses/components/address-card';
-import { Box, Button, Modal, Typography } from '@mui/material';
+import { Alert, Box, Button, Modal, Snackbar, Typography } from '@mui/material';
 import { Address } from '../../Addresses/types/address';
 import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
 import { AddCircle } from '@mui/icons-material';
@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
 import { DELETE_ADDRESS } from '../../Addresses/graphql/delete-address';
+import { SNACK_INITIAL_CONTENT } from '../../../shared/constants/snack-initial-content';
 
 function ModalUpdateClient(props: ModalPropsType) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
@@ -28,20 +29,30 @@ function ModalUpdateClient(props: ModalPropsType) {
     try {
       await deleteAddress({ variables: { id: adressIdToDelete } });
       await refetch();
-      // setSnackContent({
-      //   shouldDisplay: true,
-      //   message: 'Client has been deleted successfully!',
-      //   typeOfSnack: 'success',
-      // });
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Client address has been deleted successfully!',
+        typeOfSnack: 'success',
+      });
       setIsDeleteModalOpen(false);
     } catch (error) {
-      // setSnackContent({
-      //   shouldDisplay: true,
-      //   message: 'Error trying to delete client',
-      //   typeOfSnack: 'error',
-      // });
+      setSnackContent({
+        shouldDisplay: true,
+        message: 'Error trying to delete client address',
+        typeOfSnack: 'error',
+      });
       console.error(error);
     }
+  };
+
+  const [snackContent, setSnackContent] = useState(SNACK_INITIAL_CONTENT);
+
+  const handleCloseSnack = () => {
+    setSnackContent({
+      shouldDisplay: false,
+      message: '',
+      typeOfSnack: undefined,
+    });
   };
 
   const STYLE_MODAL = {
@@ -134,6 +145,19 @@ function ModalUpdateClient(props: ModalPropsType) {
           data={{ client: props.data.client }}
         ></ModalAddAddress>
       )}
+      <Snackbar
+        open={snackContent.shouldDisplay}
+        autoHideDuration={3000}
+        onClose={handleCloseSnack}
+      >
+        <Alert
+          onClose={handleCloseSnack}
+          severity={snackContent.typeOfSnack}
+          sx={{ width: '100%' }}
+        >
+          {snackContent.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
