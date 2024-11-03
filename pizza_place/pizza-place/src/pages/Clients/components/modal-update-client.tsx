@@ -6,11 +6,15 @@ import { Address } from '../../Addresses/types/address';
 import ModalAddAddress from '../../Addresses/components/modal-add-new-address';
 import { AddCircle } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_ADDRESSES } from '../../Addresses/graphql/get-addresses';
+import { DELETE_ADDRESS } from '../../Addresses/graphql/delete-address';
 
 function ModalUpdateClient(props: ModalPropsType) {
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [adressIdToDelete, setAdressIdToDelete] = useState<number | string>();
+
   const { loading, data, error, refetch } = useQuery(GET_ADDRESSES, {
     variables: { clientId: props.data.client.id },
   });
@@ -18,6 +22,27 @@ function ModalUpdateClient(props: ModalPropsType) {
   useEffect(() => {
     refetch();
   }, [refetch]);
+
+  const [deleteAddress] = useMutation(DELETE_ADDRESS);
+  const onDeleteAddress = async () => {
+    try {
+      await deleteAddress({ variables: { id: adressIdToDelete } });
+      await refetch();
+      // setSnackContent({
+      //   shouldDisplay: true,
+      //   message: 'Client has been deleted successfully!',
+      //   typeOfSnack: 'success',
+      // });
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      // setSnackContent({
+      //   shouldDisplay: true,
+      //   message: 'Error trying to delete client',
+      //   typeOfSnack: 'error',
+      // });
+      console.error(error);
+    }
+  };
 
   const STYLE_MODAL = {
     position: 'absolute' as 'absolute',
@@ -56,11 +81,16 @@ function ModalUpdateClient(props: ModalPropsType) {
           </h3>
           {data?.addresses?.length > 0 ? (
             data.addresses.map((address: Address) => (
-              <AddressCard
+              <div
                 key={address.id}
-                addressSummaryText={`${address.street}, ${address.number},${address.suburb_id}, ${address.city} `}
-                selected={address.default}
-              />
+                onClick={() => setAdressIdToDelete(address.id)}
+              >
+                <AddressCard
+                  addressSummaryText={`${address.street}, ${address.number},${address.suburb_id}, ${address.city} `}
+                  selected={address.default}
+                  deleteAddress={onDeleteAddress}
+                />
+              </div>
             ))
           ) : (
             <p>No address registered.</p>

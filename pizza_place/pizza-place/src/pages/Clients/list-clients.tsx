@@ -16,12 +16,12 @@ function ListClients() {
   const { data, refetch } = useQuery(GET_CLIENTS);
   const { register, getValues, setValue, reset } = useForm();
 
-  const [deleteCategory] = useMutation(DELETE_CLIENT);
+  const [deleteClient] = useMutation(DELETE_CLIENT);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [clientIdToBeDeleted, setClientIdToBeDeleted] = useState('');
-  const deleteClient = async () => {
+  const onDeleteClient = async () => {
     try {
-      await deleteCategory({ variables: { id: clientIdToBeDeleted } });
+      await deleteClient({ variables: { id: clientIdToBeDeleted } });
       await refetch();
       setSnackContent({
         shouldDisplay: true,
@@ -122,7 +122,7 @@ function ListClients() {
           isOpen={isDeleteModalOpen}
           onClose={() => setIsDeleteModalOpen(false)}
           onDismiss={() => setIsDeleteModalOpen(false)}
-          onAction={deleteClient}
+          onAction={onDeleteClient}
         ></ModalDelete>
       )}
       {isUpdateModalOpen && (
